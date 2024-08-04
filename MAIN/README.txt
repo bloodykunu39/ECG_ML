@@ -1,0 +1,1 @@
+by smooth jupyter notebook i create the .txt file >>> then i moved that txt files in data folder after for doing ml

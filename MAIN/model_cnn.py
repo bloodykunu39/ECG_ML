@@ -57,7 +57,7 @@ import torch.nn.functional as F
 
 class SmallCNN(nn.Module):
     def __init__(self):
-        super(CNN100x100, self).__init__()
+        super(SmallCNN, self).__init__()
         
         # Convolutional layers
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=32, kernel_size=3, stride=1, padding=1)

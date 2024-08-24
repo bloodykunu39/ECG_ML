@@ -1,7 +1,7 @@
 # module
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from numpy.polynomial.legendre import legendre
+from scipy.special import legendre
 import math
 
 

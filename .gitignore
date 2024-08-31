@@ -1,2 +1,3 @@
 *.pth
 MAIN/main_1.ipynb
+*.npy

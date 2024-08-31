@@ -1,11 +1,10 @@
 # module
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from numpy.polynomial.legendre import legendre
 import math
 
 
-def crossgrain(img: np.ndarray ,cg:int=50)->np.ndarray:
+def coarsegrain(img: np.ndarray ,cg:int=50)->np.ndarray:
     """
     This function takes the data matrix and returns the coarse grained data matrix to the given factor cg
 

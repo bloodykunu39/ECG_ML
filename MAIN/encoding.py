@@ -3,7 +3,18 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from scipy.special import legendre
 import math
-
+def normalize_matrix(matrix):
+    """take input as 500*12 or a person report and return the normalized matrix 
+    >>>sum of square of all the elements of the norm_matrix is 1"""
+    
+    matrix_norm = np.linalg.norm(matrix, 'fro')#frobenius norm is the square root of the sum of the absolute squares of its elements
+                                                # works for 2d arrays
+    if np.isnan(matrix_norm):# is NAN not a number 
+        #it will return a matrix of zeros of the same shape as the input matrix
+        return np.zeros_like(matrix)
+    else:
+        normalized_matrix = matrix / matrix_norm
+        return normalized_matrix
 
 def superposition(data:np.ndarray)->np.ndarray:
     """
@@ -15,9 +26,10 @@ def superposition(data:np.ndarray)->np.ndarray:
     returns:
     np.ndarray : superpositioned  img matrix of shape (5000, 5000)
     """
+    
     scale=StandardScaler()
     # making each colum of 5000 datapoint should be in
-    scaled = scale.fit_transform(data)# normal distribution of each column of the data matrix # feature scaling
+    scaled = scale.fit_transform(normalize_matrix(data))# normal distribution of each column of the data matrix # feature scaling
     img=np.zeros((5000,5000))
     x = np.linspace(-1,1,5000)
     for i in range(data.shape[1]):

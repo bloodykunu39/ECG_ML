@@ -1,2 +1,8 @@
 *.pth
 MAIN/main_1.ipynb
+*.npy
+*.zip
+*.hdf5
+MAIN\zenodo_data\exams_extracted
+MAIN\zenodo_data\data_zip
+*.csv

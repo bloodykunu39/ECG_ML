@@ -16,7 +16,7 @@ def normalize_matrix(matrix):
         normalized_matrix = matrix / matrix_norm
         return normalized_matrix
 
-def superposition(data:np.ndarray)->np.ndarray:
+def superposition(data:np.ndarray,n)->np.ndarray:
     """
     This function takes the data matrix and returns the superposition data matrix
     
@@ -31,7 +31,7 @@ def superposition(data:np.ndarray)->np.ndarray:
     # making each colum of 5000 datapoint should be in
     scaled = scale.fit_transform(normalize_matrix(data))# normal distribution of each column of the data matrix # feature scaling
     img=np.zeros((5000,5000))
-    x = np.linspace(-1,1,5000)
+    x = np.linspace(-1,1,n)
     for i in range(data.shape[1]):
         leg=legendre(i+1)(x)
         norm=math.sqrt(np.sum(leg*leg))

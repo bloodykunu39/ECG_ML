@@ -30,7 +30,7 @@ def superposition(data:np.ndarray,n)->np.ndarray:
     scale=StandardScaler()
     # making each colum of 5000 datapoint should be in
     scaled = scale.fit_transform(normalize_matrix(data))# normal distribution of each column of the data matrix # feature scaling
-    img=np.zeros((5000,5000))
+    img=np.zeros((n,n))
     x = np.linspace(-1,1,n)
     for i in range(data.shape[1]):
         leg=legendre(i+1)(x)

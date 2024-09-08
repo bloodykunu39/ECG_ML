@@ -8,3 +8,4 @@ MAIN\zenodo_data\data_zip
 *.csv
 *.txt
 MAIN/main_1_cnn_200.ipynb
+MAIN/main_1_cnn_zenedo_cg16.ipynb

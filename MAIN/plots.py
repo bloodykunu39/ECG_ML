@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import torch
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -65,7 +65,7 @@ class accuracy_and_validation_plots:
 
 
 
-class ModelEvaluator:
+class Model_Evaluator:
     def __init__(self, model, X_train, y_train, X_test, y_test, class_names):
         """
         Initialize the ModelEvaluator.
@@ -220,4 +220,111 @@ class ModelEvaluator:
         self.plot_precision_recall_curves()
         self.plot_roc_curves()
         return metrics
+
+
+
+
+import torch
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.metrics import confusion_matrix, classification_report, roc_curve, auc, precision_recall_curve, average_precision_score
+from sklearn.preprocessing import label_binarize
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+class ModelEvaluator:
+    """
+    A class to evaluate a PyTorch model and generate various evaluation plots and reports.
+    """
+    def __init__(self, model: torch.nn.Module, test_dataloader: torch.utils.data.DataLoader, label_names: list[str]):
+        """
+        Initialize the ModelEvaluator with a model, test dataloader, and label names.
+
+        Args:
+            model (torch.nn.Module): The PyTorch model to evaluate.
+            test_dataloader (torch.utils.data.DataLoader): The dataloader for the test dataset.
+            label_names (list[str]): The list of label names for the classes.
+        """
+        self.model = model
+        self.test_dataloader = test_dataloader
+        self.label_names = label_names
+        self.model.eval()
+        y_pred = []
+        y_true = []
+        with torch.no_grad():
+            for images, labels in self.test_dataloader:
+                outputs = self.model(images.to(device))
+                _, predicted = torch.max(outputs, 1)
+                y_pred.extend(predicted.cpu().numpy())
+                y_true.extend(labels.cpu().numpy())
+        self.y_true = y_true
+        self.y_pred = y_pred
+        del self.model
+        
+    def confusion_matrix_plot(self) -> None:
+        """
+        Plot the confusion matrix.
+        """
+        cm = confusion_matrix(self.y_true, self.y_pred)
+        cm = cm / cm.sum(axis=1)[:, np.newaxis]  # Normalize confusion matrix
+        df_cm = pd.DataFrame(cm, index=self.label_names, columns=self.label_names)
+        plt.figure(figsize=(10, 7))
+        sns.heatmap(df_cm, annot=True, cmap='Blues')
+        plt.xlabel('Prediction')
+        plt.ylabel('Truth')
+        plt.title('Confusion Matrix')
+        plt.show()
+
+    def classification_report_print(self) -> None:
+        """
+        Print the classification report.
+        """
+        print(classification_report(self.y_true, self.y_pred, target_names=self.label_names))
+
+    def precision_recall_curve_plot(self, num_classes: int) -> None:
+        """
+        Plot the precision-recall curve for each class.
+
+        Args:
+            num_classes (int): The number of classes.
+        """
+        y_true = label_binarize(self.y_true, classes=range(num_classes))
+        y_pred = label_binarize(self.y_pred, classes=range(num_classes))
+
+        plt.figure(figsize=(10, 8))
+        for i in range(num_classes):
+            precision, recall, _ = precision_recall_curve(y_true[:, i], y_pred[:, i])
+            ap = average_precision_score(y_true[:, i], y_pred[:, i])
+            plt.plot(recall, precision, label=f'Class {i} (AP = {ap:.2f})')
+        plt.xlabel('Recall')
+        plt.ylabel('Precision')
+        plt.title('Precision-Recall Curve')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+    def roc_curve_plot(self, num_classes: int) -> None:
+        """
+        Plot the ROC curve for each class.
+
+        Args:
+            num_classes (int): The number of classes.
+        """
+        y_true = label_binarize(self.y_true, classes=range(num_classes))
+        y_pred = label_binarize(self.y_pred, classes=range(num_classes))
+
+        plt.figure(figsize=(10, 8))
+        for i in range(num_classes):
+            fpr, tpr, _ = roc_curve(y_true[:, i], y_pred[:, i])
+            roc_auc = auc(fpr, tpr)
+            plt.plot(fpr, tpr, label=f'Class {i} (AUC = {roc_auc:.2f})')
+        plt.plot([0, 1], [0, 1], 'k--', lw=2)
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('ROC Curve')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
 

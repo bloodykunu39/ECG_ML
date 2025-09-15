@@ -1,12 +1,44 @@
->>> smooth_using_normlised_legendre and smooth_using _normlised _cehbyshev_and _hermite are encoding process the raw filtered ECG data is taken from MAIN/data_prep
 
->>> ML/data_unq has leegendre encoded 100*100 images of typ 1
+## Data and Encoding Processes
 
->>> ML/data_4 contain  the leegendre encoded 100*100 images of typ 2
+This section provides an overview of the data and the encoding processes used in this project.
 
->>> MAIN/ML/data_unq_50 and MAIN/ML/data_50 have 50*50 legendre encoded image using typ 1 and typ 2 respectly
+### ECG Data Source
 
->>>MAIN/ML/Data_herm and MAIN/ML/Data_herm_typ2 (100*1000 hermite typ1 and typ2 )
+The raw, filtered ECG data is located in the `MAIN/data_prep` directory. This data serves as the input for our encoding processes.
 
->>>MAIN/ML/Data_cheb and MAIN/ML/Data_cheb_typ2 (same as hermite)
- 
+### Data Encoding
+
+The ECG data is transformed into image representations using a series of specialized encoding functions. These processes leverage orthogonal polynomials to generate distinct image types.
+
+The primary encoding functions are:
+
+- `smooth_using_normlised_legendre`
+- `smooth_using_normlised_cehbyshev_and_hermite`
+
+### Encoded Datasets
+
+The encoded data is organized into specific directories based on the encoding method, image type, and resolution.
+
+#### Legendre Encoding
+
+| Directory | Image Resolution | Type | Description |
+|---|---|---|---|
+| `ML/data_unq` | 100x100 | 1 | Legendre encoded images of Type 1. |
+| `ML/data_4` | 100x100 | 2 | Legendre encoded images of Type 2. |
+| `MAIN/ML/data_unq_50` | 50x50 | 1 | Legendre encoded images of Type 1, at a reduced resolution. |
+| `MAIN/ML/data_50` | 50x50 | 2 | Legendre encoded images of Type 2, at a reduced resolution. |
+
+#### Hermite Encoding
+
+| Directory | Image Resolution | Type | Description |
+|---|---|---|---|
+| `MAIN/ML/Data_herm` | 100x100 | 1 | Hermite encoded images of Type 1. |
+| `MAIN/ML/Data_herm_typ2` | 100x100 | 2 | Hermite encoded images of Type 2. |
+
+#### Chebyshev Encoding
+
+| Directory | Image Resolution | Type | Description |
+|---|---|---|---|
+| `MAIN/ML/Data_cheb` | 100x100 | 1 | Chebyshev encoded images of Type 1. |
+| `MAIN/ML/Data_cheb_typ2` | 100x100 | 2 | Chebyshev encoded images of Type 2. |

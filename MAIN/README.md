@@ -52,21 +52,17 @@ The results directory contains pickle files with:
 
 ## Experiment Notebooks
 
-| Notebook                                | Model / Setup             | Data Encoding        | Input Shape | Data Type | Notes |
-|-----------------------------------------|---------------------------|----------------------|-------------|-----------|-------|
-| `main_1_cnn100_unique.ipynb`            | SmallCNN (100×100)        | Legendre             | 100×100     | Type 1    | Trained on Type-1 data |
-| `main_1_cnn100.ipynb`                   | SmallCNN (100×100)        | Legendre             | 100×100     | Type 2    | Trained on Type-2 data |
-| `main_1_cnn50_typ2.ipynb`               | SmallCNN50                | Legendre             | 50×50       | Type 2    | Explicit Type-2 data |
-| `main_1_cnn50.ipynb`                    | SmallCNN50                | Legendre             | 50×50       | Type 2    | Trained on Type-2 data |
-| `main_1_nn_cg16_leg_singlelead_typ2.ipynb` | Feedforward NN          | Raw ECG (Lead 1)     | (5000,1)    | Type 2    | Single-lead, Type-2 data |
-| `main_1_nn_cg16_leg_singlelead.ipynb`   | Feedforward NN            | Raw ECG (Lead 1)     | (5000,1)    | Type 1    | Single-lead, Type-1 data |
-| `main_1_nn_cg16_leg_unique.ipynb`       | Feedforward NN (flattened)| Legendre             | 100×100     | Type 1    | Trained on Type-1 data |
-| `main_1_nn_cg16_leg.ipynb`              | Feedforward NN (flattened)| Legendre             | 100×100     | Type 2    | Trained on Type-2 data |
-| `main_cnn100_cheb_typ2.ipynb`           | CNN (100×100)             | Chebyshev            | 100×100     | Type 2    | Trained on Type-2 data |
-| `main_cnn100_cheb.ipynb`                | CNN (100×100)             | Chebyshev            | 100×100     | Type 1    | Trained on Type-1 data |
-| `main_cnn100_herm_typ2.ipynb`           | CNN (100×100)             | Hermite              | 100×100     | Type 2    | Trained on Type-2 data |
-| `main_cnn100_herm.ipynb`                | CNN (100×100)             | Hermite              | 100×100     | Type 1    | Trained on Type-1 data |
-| `superpostion_inverse.ipynb`            | Utility                   | Various encodings    | -           | -         | Verifies reversibility of encoded images |
+| Notebook                                | Model / Setup             | Data Encoding        | Input Shape | Data Type | Notes | Result Saved in Folder |
+|-----------------------------------------|---------------------------|--------------------|-------------|-----------|-------|-----------------------|
+| `main_1_cnn100_unique.ipynb`            | SmallCNN (100×100)        | Legendre           | 100×100     | Type 1    | Trained on Type-1 data | Result_and_Model_cnn100_Type1/ |
+| `main_1_cnn100.ipynb`                   | SmallCNN (100×100)        | Legendre           | 100×100     | Type 2    | Trained on Type-2 data | Result_and_Model_cnn100_Type2/ |
+| `main_1_cnn50_typ2.ipynb`               | SmallCNN50                | Legendre           | 50×50       | Type 2    | Explicit Type-2 data | main_1_cnn50_typ2/ |
+| `main_1_cnn50.ipynb`                    | SmallCNN50                | Legendre           | 50×50       | Type 1    | Trained on Type-1 data | main_1_cnn50/ |
+| `main_1_ffnn_cg50_leg_singlelead_typ2.ipynb` | Feedforward NN          | Raw ECG (Lead 1)   | (5000,1)    | Type 2    | Single-lead, Type-2 data | main_1_ffnn_cg50_leg_singlelead_typ2/ |
+| `main_1_ffnn_cg50_leg_singlelead.ipynb`   | Feedforward NN            | Raw ECG (Lead 1)   | (5000,1)    | Type 1    | Single-lead, Type-1 data | main_1_ffnn_cg50_leg_singlelead/ |
+| `main_1_ffnn_cg50_leg_unique.ipynb`       | Feedforward NN (flattened)| Legendre           | 100×100     | Type 1    | Trained on Type-1 data | main_1_ffnn_cg50_leg_unique/ |
+| `main_1_ffnn_cg50_leg.ipynb`
+
 
 
 ## Key Scripts
@@ -119,10 +115,35 @@ The results directory contains pickle files with:
   Results and models from `main_1_nn_cg16_leg.ipynb`.
 
 - **main_1_nn_cg16_leg_singlelead/**  
-  FFNN experiment results and models for single-lead  leg data (`main_1_nn_cg16_leg_singlelead.ipynb`).
+  FFNN experiment results and models for single-lead leg data (`main_1_nn_cg16_leg_singlelead.ipynb`).
 
 - **main_1_nn_cg16_leg_singlelead_typ2/**  
-  Results and models for single-lead  leg Type-2 data.
+  Results and models for single-lead leg Type-2 data (`main_1_nn_cg16_leg_singlelead_typ2.ipynb`).
+
+- **main_1_nn_cg16_leg_unique/**  
+  Results and models from FFNN experiments on unique leg data (`main_1_nn_cg16_leg_unique.ipynb`).
+- **Result_and_Model_cnn100_Type1/**
+    Results and models from `main_1_cnn100_unique.ipynb` (Type-1 data).
+- **Result_and_Model_cnn100_Type2/**
+
+    Results and models from `main_1_cnn100.ipynb` (Type-2 data).
+
+- **main_cnn100_cheb_typ1/**
+    Results and models from `main_cnn100_cheb_typ1.ipynb` (Chebyshev Type-1 data).
+
+- **main_cnn100_cheb_typ2/**
+    Results and models from `main_cnn100_cheb_typ2.ipynb` (Chebyshev Type-2 data).
+
+- **main_herm_typ1/**
+    Results and models from `main_cnn100_herm_typ1.ipynb` (Hermite Type-1 data).
+- **main_herm_typ2/**
+    Results and models from `main_cnn100_herm_typ2.ipynb` (Hermite Type-2 data).
+
+
+    
 
 
 note : cg16 means nothing at all it should be cg50 mean 50 coarsegrain
+   
+
+   

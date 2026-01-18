@@ -58,42 +58,83 @@ import torch.nn.functional as F
 # -------------------------
 # Define SmallCNN
 # -------------------------
+# class SmallCNN(nn.Module):
+#     def __init__(self):
+#         super(SmallCNN, self).__init__()
+        
+#         # Convolutional layers
+#         self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1)
+#         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
+#         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        
+#         # Batch normalization
+#         self.bn1 = nn.BatchNorm2d(32)
+#         self.bn2 = nn.BatchNorm2d(64)
+#         self.bn3 = nn.BatchNorm2d(128)
+        
+#         # Pooling
+#         self.pool = nn.MaxPool2d(2, 2)
+        
+#         # Dropout
+#         self.dropout_conv = nn.Dropout2d(0.2)
+#         self.dropout_fc = nn.Dropout(0.5)
+        
+#         # Fully connected layers
+#         self.fc1 = nn.Linear(128*12*12, 512)
+#         self.fc2 = nn.Linear(512, 3)
+    
+#     def forward(self, x):
+#         x = self.pool(F.relu(self.bn1(self.conv1(x))))
+#         x = self.dropout_conv(x)
+#         x = self.pool(F.relu(self.bn2(self.conv2(x))))
+#         x = self.pool(F.relu(self.bn3(self.conv3(x))))
+#         x = x.view(-1, 128*12*12)
+#         x = F.relu(self.fc1(x))
+#         x = self.dropout_fc(x)
+#         x = self.fc2(x)
+#         return x
+# new one smaller and adaptive pooling
 class SmallCNN(nn.Module):
-    def __init__(self):
+    def __init__(self, num_classes=3):
         super(SmallCNN, self).__init__()
         
-        # Convolutional layers
-        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1)
-        self.conv2 = nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1)
-        self.conv3 = nn.Conv2d(64, 128, kernel_size=3, stride=1, padding=1)
+        self.features = nn.Sequential(
+            # Block 1
+            nn.Conv2d(1, 32, kernel_size=3, padding=1),
+            nn.BatchNorm2d(32),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            nn.Dropout2d(0.25),
+            
+            # Block 2
+            nn.Conv2d(32, 64, kernel_size=3, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            
+            # Block 3
+            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.BatchNorm2d(128),
+            nn.ReLU(),
+            nn.MaxPool2d(2, 2),
+            
+            # Adaptive pooling to fixed size
+            nn.AdaptiveAvgPool2d((4, 4))  # Always outputs 4×4
+        )
         
-        # Batch normalization
-        self.bn1 = nn.BatchNorm2d(32)
-        self.bn2 = nn.BatchNorm2d(64)
-        self.bn3 = nn.BatchNorm2d(128)
-        
-        # Pooling
-        self.pool = nn.MaxPool2d(2, 2)
-        
-        # Dropout
-        self.dropout_conv = nn.Dropout2d(0.2)
-        self.dropout_fc = nn.Dropout(0.5)
-        
-        # Fully connected layers
-        self.fc1 = nn.Linear(128*12*12, 512)
-        self.fc2 = nn.Linear(512, 3)
+        self.classifier = nn.Sequential(
+            nn.Dropout(0.5),
+            nn.Linear(128 * 4 * 4, 512),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(512, num_classes)
+        )
     
     def forward(self, x):
-        x = self.pool(F.relu(self.bn1(self.conv1(x))))
-        x = self.dropout_conv(x)
-        x = self.pool(F.relu(self.bn2(self.conv2(x))))
-        x = self.pool(F.relu(self.bn3(self.conv3(x))))
-        x = x.view(-1, 128*12*12)
-        x = F.relu(self.fc1(x))
-        x = self.dropout_fc(x)
-        x = self.fc2(x)
+        x = self.features(x)
+        x = x.view(x.size(0), -1)
+        x = self.classifier(x)
         return x
-    
 class SmallCNN50(nn.Module):
     def __init__(self):
         super(SmallCNN50, self).__init__()

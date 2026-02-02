@@ -328,3 +328,657 @@ class ModelEvaluator:
         plt.grid(True)
         plt.show()
 
+def plot_precision_recall_curves(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                                  colors=['blue', 'red', 'green'],
+                                  figsize_micro=(8, 6), figsize_multi=(10, 8)):
+    """
+    Plot Precision-Recall curves for multi-class classification.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        colors: List of colors for each class
+        figsize_micro: Figure size for micro-averaged PR curve
+        figsize_multi: Figure size for multi-class PR curves
+    
+    Returns:
+        dict: Dictionary containing precision, recall, and average_precision for each class
+    """
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    y_true = np.array(y_true)
+    
+    precision = dict()
+    recall = dict()
+    average_precision = dict()
+    
+    # For each class, compute PR curve using probability scores
+    for i in range(n_classes):
+        precision[i], recall[i], _ = precision_recall_curve(
+            (y_true == i).astype(int),  # Binary true labels for class i
+            y_scores[:, i]  # Probability scores for class i
+        )
+        average_precision[i] = average_precision_score(
+            (y_true == i).astype(int), 
+            y_scores[:, i]
+        )
+    
+    # Micro-average: using probability scores
+    y_true_binary = label_binarize(y_true, classes=list(range(n_classes)))
+    precision["micro"], recall["micro"], _ = precision_recall_curve(
+        y_true_binary.ravel(),
+        y_scores.ravel()
+    )
+    average_precision["micro"] = average_precision_score(
+        y_true_binary, 
+        y_scores,
+        average="micro"
+    )
+    
+    print('Average precision score, micro-averaged over all classes: {0:0.2f}'
+          .format(average_precision["micro"]))
+    
+    # Plot micro-average PR curve
+    plt.figure(figsize=figsize_micro)
+    plt.step(recall['micro'], precision['micro'], where='post', linewidth=2)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title(
+        'Average precision score, micro-averaged over all classes: AP={0:0.2f}'
+        .format(average_precision["micro"]))
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    # Plot individual class PR curves
+    plt.figure(figsize=figsize_multi)
+    for i, color, class_name in zip(range(n_classes), colors, class_names):
+        plt.plot(recall[i], precision[i], color=color, lw=2,
+                 label=f'{class_name} (AP = {average_precision[i]:0.2f})')
+    
+    plt.plot(recall['micro'], precision['micro'], color='gold', lw=2, linestyle='--',
+             label=f'Micro-average (AP = {average_precision["micro"]:0.2f})')
+    
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title('Precision-Recall Curves for Multi-class Classification')
+    plt.legend(loc="lower left")
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return {"precision": precision, "recall": recall, "average_precision": average_precision}
+
+
+def evaluate_model_with_cm(model, dataloader, device, class_names=["ST", "SB", "SR"], 
+                           figsize=(10, 7), cmap='Blues', return_metrics=False):
+    """
+    Evaluate model and plot confusion matrix.
+    
+    Args:
+        model: PyTorch model to evaluate
+        dataloader: DataLoader for evaluation data
+        device: Device to run evaluation on
+        class_names: List of class names for confusion matrix labels
+        figsize: Figure size for the plot
+        cmap: Colormap for heatmap
+        return_metrics: If True, returns y_true, y_pred, y_scores
+    
+    Returns:
+        If return_metrics=True: tuple of (y_true, y_pred, y_scores, cm)
+        Otherwise: None (just plots)
+    """
+    from sklearn.metrics import confusion_matrix
+    import seaborn as sns
+    import pandas as pd
+    import torch.nn.functional as F
+    import numpy as np
+    import matplotlib.pyplot as plt
+    
+    model.eval()
+    y_pred = []
+    y_true = []
+    y_scores = []
+    
+    with torch.no_grad():
+        for images, labels in dataloader:
+            outputs = model(images.to(device))
+            probabilities = F.softmax(outputs, dim=1)
+            y_scores.extend(probabilities.cpu().numpy())
+            
+            _, predicted = torch.max(outputs, 1)
+            y_pred.extend(predicted.cpu().numpy())
+            y_true.extend(labels.cpu().numpy())
+    
+    # Convert to numpy arrays
+    y_scores = np.array(y_scores)
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    
+    # Create and normalize confusion matrix
+    cm = confusion_matrix(y_true, y_pred)
+    cm_normalized = cm / cm.sum(axis=1)[:, np.newaxis]
+    
+    # Plot
+    df_cm = pd.DataFrame(cm_normalized, index=class_names, columns=class_names)
+    plt.figure(figsize=figsize)
+    sns.heatmap(df_cm, annot=True, cmap=cmap)
+    plt.xlabel('Prediction')
+    plt.ylabel('Truth')
+    plt.title('Confusion Matrix')
+    plt.show()
+    
+    if return_metrics:
+        return y_true, y_pred, y_scores, cm
+    
+def plot_micro_averaged_pr_curve(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                                  figsize=(8, 6)):
+    """
+    Plot micro-averaged Precision-Recall curve.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        figsize: Figure size for the plot
+    
+    Returns:
+        dict: Dictionary containing micro-averaged precision, recall, and average_precision
+    """
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    y_true = np.array(y_true)
+    
+    # Micro-average: using probability scores
+    y_true_binary = label_binarize(y_true, classes=list(range(n_classes)))
+    precision_micro, recall_micro, _ = precision_recall_curve(
+        y_true_binary.ravel(),
+        y_scores.ravel()
+    )
+    average_precision_micro = average_precision_score(
+        y_true_binary, 
+        y_scores,
+        average="micro"
+    )
+    
+    print('Average precision score, micro-averaged over all classes: {0:0.4f}'
+          .format(average_precision_micro))
+    
+    # Plot micro-average PR curve
+    plt.figure(figsize=figsize)
+    plt.step(recall_micro, precision_micro, where='post', linewidth=2)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title(
+        'Average precision score, micro-averaged over all classes: AP={0:0.4f}'
+        .format(average_precision_micro))
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return {
+        "precision": precision_micro, 
+        "recall": recall_micro, 
+        "average_precision": average_precision_micro
+    }
+
+
+def plot_per_class_pr_curves(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                              colors=['blue', 'red', 'green'], figsize=(10, 8)):
+    """
+    Plot individual class Precision-Recall curves with micro-average.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        colors: List of colors for each class
+        figsize: Figure size for the plot
+    
+    Returns:
+        dict: Dictionary containing precision, recall, and average_precision for each class and micro-average
+    """
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    y_true = np.array(y_true)
+    
+    precision = dict()
+    recall = dict()
+    average_precision = dict()
+    
+    # For each class, compute PR curve using probability scores
+    for i in range(n_classes):
+        precision[i], recall[i], _ = precision_recall_curve(
+            (y_true == i).astype(int),  # Binary true labels for class i
+            y_scores[:, i]  # Probability scores for class i
+        )
+        average_precision[i] = average_precision_score(
+            (y_true == i).astype(int), 
+            y_scores[:, i]
+        )
+    
+    # Micro-average: using probability scores
+    y_true_binary = label_binarize(y_true, classes=list(range(n_classes)))
+    precision["micro"], recall["micro"], _ = precision_recall_curve(
+        y_true_binary.ravel(),
+        y_scores.ravel()
+    )
+    average_precision["micro"] = average_precision_score(
+        y_true_binary, 
+        y_scores,
+        average="micro"
+    )
+    
+    # Plot individual class PR curves
+    plt.figure(figsize=figsize)
+    for i, color, class_name in zip(range(n_classes), colors, class_names):
+        plt.plot(recall[i], precision[i], color=color, lw=2,
+                 label=f'{class_name} (AP = {average_precision[i]:0.4f})')
+    
+    plt.plot(recall['micro'], precision['micro'], color='gold', lw=2, linestyle='--',
+             label=f'Micro-average (AP = {average_precision["micro"]:0.4f})')
+    
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title('Precision-Recall Curves for Multi-class Classification')
+    plt.legend(loc="lower left")
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return {"precision": precision, "recall": recall, "average_precision": average_precision}
+
+
+def plot_roc_curves(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                    colors=['aqua', 'darkorange', 'cornflowerblue'], 
+                    figsize=(10, 8)):
+    """
+    Plot ROC curves for multi-class classification with micro and macro averages.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        colors: List of colors for each class
+        figsize: Figure size for the plot
+    
+    Returns:
+        dict: Dictionary containing fpr, tpr, and roc_auc for each class and averages
+    """
+    from sklearn.metrics import roc_curve, auc
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    
+    # Binarize the true labels for multi-class ROC
+    y_test = label_binarize(y_true, classes=list(range(n_classes)))
+    
+    # Use probability scores (not predictions!)
+    y_score = y_scores  # This contains the probability scores from softmax
+    
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+    
+    # Compute ROC curve and ROC area for each class
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(y_test[:, i], y_score[:, i])
+        roc_auc[i] = auc(fpr[i], tpr[i])
+    
+    # Compute micro-average ROC curve and ROC area
+    fpr["micro"], tpr["micro"], _ = roc_curve(y_test.ravel(), y_score.ravel())
+    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+    
+    # Compute macro-average ROC curve and ROC area
+    # First aggregate all false positive rates
+    all_fpr = np.unique(np.concatenate([fpr[i] for i in range(n_classes)]))
+    
+    # Then interpolate all ROC curves at these points
+    mean_tpr = np.zeros_like(all_fpr)
+    for i in range(n_classes):
+        mean_tpr += np.interp(all_fpr, fpr[i], tpr[i])
+    
+    # Finally average it and compute AUC
+    mean_tpr /= n_classes
+    
+    fpr["macro"] = all_fpr
+    tpr["macro"] = mean_tpr
+    roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
+    
+    # Plot all ROC curves
+    plt.figure(figsize=figsize)
+    
+    # Plot micro-average ROC curve
+    plt.plot(fpr["micro"], tpr["micro"],
+             label='Micro-average ROC curve (AUC = {0:0.4f})'
+                   ''.format(roc_auc["micro"]),
+             color='deeppink', linestyle=':', linewidth=4)
+    
+    # Plot macro-average ROC curve
+    plt.plot(fpr["macro"], tpr["macro"],
+             label='Macro-average ROC curve (AUC = {0:0.4f})'
+                   ''.format(roc_auc["macro"]),
+             color='navy', linestyle=':', linewidth=4)
+    
+    # Plot ROC curve for each class
+    for i, color, class_name in zip(range(n_classes), colors, class_names):
+        plt.plot(fpr[i], tpr[i], color=color, lw=2,
+                 label=f'ROC curve of class {class_name} (AUC = {roc_auc[i]:0.4f})')
+    
+    # Plot diagonal line (random classifier)
+    plt.plot([0, 1], [0, 1], 'k--', lw=2, label='Random Classifier')
+    
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curves for Multi-class Classification')
+    plt.legend(loc="lower right")
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    # Print AUC scores
+    print("AUC Scores:")
+    for i, class_name in enumerate(class_names):
+        print(f"Class {class_name}: {roc_auc[i]:.4f}")
+    print(f"Micro-average: {roc_auc['micro']:.4f}")
+    print(f"Macro-average: {roc_auc['macro']:.4f}")
+    
+    return {"fpr": fpr, "tpr": tpr, "roc_auc": roc_auc}
+
+
+def print_classification_report(y_true, y_pred, class_names=["ST", "SB", "SR"], digits=4):
+    """
+    Print classification report with precision, recall, f1-score for each class.
+    
+    Args:
+        y_true: Array of true labels
+        y_pred: Array of predicted labels
+        class_names: List of class names
+        digits: Number of decimal digits to display (default: 4)
+    
+    Returns:
+        str: Classification report as string
+    """
+    from sklearn.metrics import classification_report
+    import numpy as np
+    
+    y_true = np.array(y_true)
+    y_pred = np.array(y_pred)
+    
+    report = classification_report(y_true, y_pred, target_names=class_names, digits=digits)
+    print(report)
+    
+    return report
+
+
+def plot_micro_averaged_pr_curve(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                                  figsize=(8, 6)):
+    """
+    Plot micro-averaged Precision-Recall curve.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        figsize: Figure size for the plot
+    
+    Returns:
+        dict: Dictionary containing micro-averaged precision, recall, and average_precision
+    """
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    y_true = np.array(y_true)
+    
+    # Micro-average: using probability scores
+    y_true_binary = label_binarize(y_true, classes=list(range(n_classes)))
+    precision_micro, recall_micro, _ = precision_recall_curve(
+        y_true_binary.ravel(),
+        y_scores.ravel()
+    )
+    average_precision_micro = average_precision_score(
+        y_true_binary, 
+        y_scores,
+        average="micro"
+    )
+    
+    print('Average precision score, micro-averaged over all classes: {0:0.2f}'
+          .format(average_precision_micro))
+    
+    # Plot micro-average PR curve
+    plt.figure(figsize=figsize)
+    plt.step(recall_micro, precision_micro, where='post', linewidth=2)
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title(
+        'Average precision score, micro-averaged over all classes: AP={0:0.2f}'
+        .format(average_precision_micro))
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return {
+        "precision": precision_micro, 
+        "recall": recall_micro, 
+        "average_precision": average_precision_micro
+    }
+
+
+def plot_per_class_pr_curves(y_true, y_scores, class_names=["ST", "SB", "SR"], 
+                              colors=['blue', 'red', 'green'], figsize=(10, 8)):
+    """
+    Plot individual class Precision-Recall curves with micro-average.
+    
+    Args:
+        y_true: Array of true labels
+        y_scores: Array of probability scores (shape: n_samples x n_classes)
+        class_names: List of class names
+        colors: List of colors for each class
+        figsize: Figure size for the plot
+    
+    Returns:
+        dict: Dictionary containing precision, recall, and average_precision for each class and micro-average
+    """
+    from sklearn.metrics import precision_recall_curve, average_precision_score
+    from sklearn.preprocessing import label_binarize
+    import matplotlib.pyplot as plt
+    import numpy as np
+    
+    n_classes = len(class_names)
+    y_true = np.array(y_true)
+    
+    precision = dict()
+    recall = dict()
+    average_precision = dict()
+    
+    # For each class, compute PR curve using probability scores
+    for i in range(n_classes):
+        precision[i], recall[i], _ = precision_recall_curve(
+            (y_true == i).astype(int),  # Binary true labels for class i
+            y_scores[:, i]  # Probability scores for class i
+        )
+        average_precision[i] = average_precision_score(
+            (y_true == i).astype(int), 
+            y_scores[:, i]
+        )
+    
+    # Micro-average: using probability scores
+    y_true_binary = label_binarize(y_true, classes=list(range(n_classes)))
+    precision["micro"], recall["micro"], _ = precision_recall_curve(
+        y_true_binary.ravel(),
+        y_scores.ravel()
+    )
+    average_precision["micro"] = average_precision_score(
+        y_true_binary, 
+        y_scores,
+        average="micro"
+    )
+    
+    # Plot individual class PR curves
+    plt.figure(figsize=figsize)
+    for i, color, class_name in zip(range(n_classes), colors, class_names):
+        plt.plot(recall[i], precision[i], color=color, lw=2,
+                 label=f'{class_name} (AP = {average_precision[i]:0.2f})')
+    
+    plt.plot(recall['micro'], precision['micro'], color='gold', lw=2, linestyle='--',
+             label=f'Micro-average (AP = {average_precision["micro"]:0.2f})')
+    
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.ylim([0.0, 1.05])
+    plt.xlim([0.0, 1.0])
+    plt.title('Precision-Recall Curves for Multi-class Classification')
+    plt.legend(loc="lower left")
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    return {"precision": precision, "recall": recall, "average_precision": average_precision}
+
+
+
+def evaluate_all(model, dataloader, device, class_names=["ST", "SB", "SR"],
+                 colors_pr=['blue', 'red', 'green'],
+                 colors_roc=['aqua', 'darkorange', 'cornflowerblue'],
+                 plot_confusion_matrix=True,
+                 plot_pr_micro=True,
+                 plot_pr_per_class=True,
+                 plot_roc=True,
+                 print_report=True):
+    """
+    Comprehensive model evaluation with all plots and metrics.
+    
+    Args:
+        model: PyTorch model to evaluate
+        dataloader: DataLoader for evaluation data
+        device: Device to run evaluation on
+        class_names: List of class names
+        colors_pr: List of colors for PR curves
+        colors_roc: List of colors for ROC curves
+        plot_confusion_matrix: Whether to plot confusion matrix
+        plot_pr_micro: Whether to plot micro-averaged PR curve
+        plot_pr_per_class: Whether to plot per-class PR curves
+        plot_roc: Whether to plot ROC curves
+        print_report: Whether to print classification report
+    
+    Returns:
+        dict: Dictionary containing all metrics (y_true, y_pred, y_scores, cm, pr_metrics, roc_metrics, report)
+    """
+    results = {}
+    
+    # Step 1: Evaluate model and get confusion matrix
+    if plot_confusion_matrix:
+        print("=" * 80)
+        print("CONFUSION MATRIX")
+        print("=" * 80)
+        y_true, y_pred, y_scores, cm = evaluate_model_with_cm(
+            model, dataloader, device, class_names=class_names, return_metrics=True
+        )
+        results['y_true'] = y_true
+        results['y_pred'] = y_pred
+        results['y_scores'] = y_scores
+        results['confusion_matrix'] = cm
+        print()
+    else:
+        # Still need to get predictions for other plots
+        import torch
+        import torch.nn.functional as F
+        import numpy as np
+        
+        model.eval()
+        y_pred = []
+        y_true = []
+        y_scores = []
+        
+        with torch.no_grad():
+            for images, labels in dataloader:
+                outputs = model(images.to(device))
+                probabilities = F.softmax(outputs, dim=1)
+                y_scores.extend(probabilities.cpu().numpy())
+                
+                _, predicted = torch.max(outputs, 1)
+                y_pred.extend(predicted.cpu().numpy())
+                y_true.extend(labels.cpu().numpy())
+        
+        y_scores = np.array(y_scores)
+        y_true = np.array(y_true)
+        y_pred = np.array(y_pred)
+        
+        results['y_true'] = y_true
+        results['y_pred'] = y_pred
+        results['y_scores'] = y_scores
+    
+    # Step 2: Plot micro-averaged PR curve
+    if plot_pr_micro:
+        print("=" * 80)
+        print("MICRO-AVERAGED PRECISION-RECALL CURVE")
+        print("=" * 80)
+        pr_micro = plot_micro_averaged_pr_curve(
+            results['y_true'], results['y_scores'], class_names=class_names
+        )
+        results['pr_micro'] = pr_micro
+        print()
+    
+    # Step 3: Plot per-class PR curves
+    if plot_pr_per_class:
+        print("=" * 80)
+        print("PER-CLASS PRECISION-RECALL CURVES")
+        print("=" * 80)
+        pr_per_class = plot_per_class_pr_curves(
+            results['y_true'], results['y_scores'], 
+            class_names=class_names, colors=colors_pr
+        )
+        results['pr_per_class'] = pr_per_class
+        print()
+    
+    # Step 4: Plot ROC curves
+    if plot_roc:
+        print("=" * 80)
+        print("ROC CURVES")
+        print("=" * 80)
+        roc_metrics = plot_roc_curves(
+            results['y_true'], results['y_scores'],
+            class_names=class_names, colors=colors_roc
+        )
+        results['roc_metrics'] = roc_metrics
+        print()
+    
+    # Step 5: Print classification report
+    if print_report:
+        print("=" * 80)
+        print("CLASSIFICATION REPORT")
+        print("=" * 80)
+        report = print_classification_report(
+            results['y_true'], results['y_pred'], class_names=class_names
+        )
+        results['classification_report'] = report
+        print()
+    
+    print("=" * 80)
+    print("EVALUATION COMPLETE")
+    print("=" * 80)
+    
+    return results

@@ -39,3 +39,25 @@ def superposition(data:np.ndarray,n)->np.ndarray:
                          leg#legendre polinomial of order i+1 apllied to x p_n applies to matrix x
                          )/norm
     return img
+
+def inverse_superposition(img: np.ndarray, num_leads: int = 12) -> np.ndarray:
+    """
+    Reconstruct lead signals from the superposition image.
+
+    args:
+    img : np.ndarray : superposition image matrix of shape (n, n)
+    num_leads : int : number of ECG leads to reconstruct (default=12)
+
+    returns:
+    np.ndarray : reconstructed lead matrix of shape (n, num_leads)
+    """
+    n = img.shape[0]
+    x = np.linspace(-1, 1, n)
+    inversed = []
+
+    for i in range(1, num_leads + 1):
+        leg = legendre(i)(x)
+        norm = math.sqrt(np.sum(leg * leg))
+        inversed.append(np.dot(img, leg) / norm)
+
+    return np.array(inversed).T

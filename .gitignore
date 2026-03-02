@@ -5,5 +5,4 @@ MAIN/main_1.ipynb
 *.hdf5
 MAIN\zenodo_data\exams_extracted
 MAIN\zenodo_data\data_zip
-*.csv
 *.txt

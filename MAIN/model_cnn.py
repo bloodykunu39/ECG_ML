@@ -135,6 +135,8 @@ class SmallCNN(nn.Module):
         x = x.view(x.size(0), -1)
         x = self.classifier(x)
         return x
+
+
 class SmallCNN50(nn.Module):
     def __init__(self):
         super(SmallCNN50, self).__init__()

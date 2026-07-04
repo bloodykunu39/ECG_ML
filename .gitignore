@@ -6,3 +6,8 @@ MAIN/main_1.ipynb
 MAIN\zenodo_data\exams_extracted
 MAIN\zenodo_data\data_zip
 *.txt
+MAIN/ARCHIVE
+MAIN/overleaf
+MAIN/__pycache__
+kupa.ipynb
+MAIN/encoding2.py

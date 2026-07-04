@@ -982,3 +982,464 @@ def evaluate_all(model, dataloader, device, class_names=["ST", "SB", "SR"],
     print("=" * 80)
     
     return results
+
+
+# ---------------------------------------------------------------------------
+# Multi-seed utilities  (added for 5-seed reproducibility)
+# ---------------------------------------------------------------------------
+
+def plot_learning_curves_multiseed(
+    all_histories: list,
+    metric: str = "val_acc",
+    title: str = "Learning Curve (5 seeds)",
+    save_path: str = None,
+    figsize: tuple = (10, 5),
+) -> None:
+    """
+    Plot mean ± std learning curves across multiple seeds.
+    Handles variable-length histories (different early-stopping per seed)
+    by NaN-padding shorter runs before computing mean/std.
+
+    Parameters
+    ----------
+    all_histories : list of dict
+        One dict per seed, each with keys:
+        'train_loss', 'val_loss', 'train_acc', 'val_acc'
+        (lists of per-epoch values — may differ in length).
+    metric : str
+        Which key to plot. One of 'train_loss', 'val_loss',
+        'train_acc', 'val_acc'.
+    title : str
+        Plot title.
+    save_path : str or None
+        If given, saves the figure to this path.
+    figsize : tuple
+        Matplotlib figure size.
+    """
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    raw = [h[metric] for h in all_histories]
+
+    # Pad shorter runs with NaN so all rows have the same length
+    max_len = max(len(r) for r in raw)
+    padded  = np.full((len(raw), max_len), np.nan)
+    for i, r in enumerate(raw):
+        padded[i, :len(r)] = r
+
+    # NaN-aware mean and std (ignores missing epochs)
+    mean   = np.nanmean(padded, axis=0)
+    std    = np.nanstd(padded,  axis=0)
+    epochs = np.arange(1, max_len + 1)
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Individual seed traces (light) — plot only the non-NaN portion
+    seed_labels = [40 + i for i in range(len(raw))]
+    for i, (row, lbl) in enumerate(zip(padded, seed_labels)):
+        valid = ~np.isnan(row)
+        ax.plot(epochs[valid], row[valid], alpha=0.25, linewidth=1,
+                label=f"seeds (individual)" if i == 0 else "_nolegend_",
+                color="steelblue")
+
+    # Mean ± std band (NaN propagation hides missing epochs cleanly)
+    ax.plot(epochs, mean, linewidth=2.5, label="Mean", color="steelblue")
+    ax.fill_between(
+        epochs,
+        np.where(np.isnan(mean - std), np.nan, mean - std),
+        np.where(np.isnan(mean + std), np.nan, mean + std),
+        alpha=0.25, color="steelblue", label="±1 std"
+    )
+
+    ylabel = "Accuracy (%)" if "acc" in metric else "Loss"
+    ax.set_xlabel("Epoch", fontsize=13)
+    ax.set_ylabel(ylabel, fontsize=13)
+    ax.set_title(title, fontsize=14)
+    ax.legend(fontsize=11)
+    ax.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    if save_path:
+        plt.savefig(save_path, dpi=150)
+        print(f"Saved: {save_path}")
+    plt.show()
+
+
+def summarize_seed_results(
+    all_metrics: list,
+    class_names: list = None,
+    save_csv: str = None,
+) -> dict:
+    """
+    Compute and print mean ± std of key metrics across seeds.
+
+    Parameters
+    ----------
+    all_metrics : list of dict
+        One dict per seed — the return value of evaluate_all().
+        Each dict must contain 'y_true', 'y_pred', 'y_scores'.
+    class_names : list of str or None
+        Class labels (for per-class F1). Defaults to ['ST','SB','SR'].
+    save_csv : str or None
+        If given, saves a summary CSV to this path.
+
+    Returns
+    -------
+    dict  with keys 'mean' and 'std', each mapping metric → value.
+    """
+    import numpy as np
+    import pandas as pd
+    from sklearn.metrics import (
+        accuracy_score, f1_score, roc_auc_score, average_precision_score,
+        classification_report
+    )
+    from sklearn.preprocessing import label_binarize
+
+    if class_names is None:
+        class_names = ["ST", "SB", "SR"]
+
+    n_classes = len(class_names)
+    rows = []
+    
+    # Store classification_report dictionaries and AUCs for all seeds
+    all_reports = []
+    all_aucs = {c: [] for c in class_names}
+
+    for s, res in enumerate(all_metrics):
+        y_true   = np.array(res["y_true"])
+        y_pred   = np.array(res["y_pred"])
+        y_scores = np.array(res["y_scores"])
+
+        acc      = accuracy_score(y_true, y_pred) * 100
+        f1_macro = f1_score(y_true, y_pred, average="macro")
+        f1_micro = f1_score(y_true, y_pred, average="micro")
+
+        y_bin    = label_binarize(y_true, classes=list(range(n_classes)))
+        auc_mac  = roc_auc_score(y_bin, y_scores, average="macro", multi_class="ovr")
+        ap_mic   = average_precision_score(y_bin, y_scores, average="micro")
+        
+        # Per-class AUCs
+        for i, c_name in enumerate(class_names):
+            all_aucs[c_name].append(roc_auc_score(y_bin[:, i], y_scores[:, i]))
+        
+        # Collect full classification report as dict
+        rep = classification_report(y_true, y_pred, target_names=class_names, output_dict=True)
+        all_reports.append(rep)
+
+        row = {
+            "seed":       40 + s,
+            "accuracy":   acc,
+            "f1_macro":   f1_macro,
+            "f1_micro":   f1_micro,
+            "auc_macro":  auc_mac,
+            "ap_micro":   ap_mic,
+        }
+        rows.append(row)
+
+    df = pd.DataFrame(rows).set_index("seed")
+
+    mean = df.mean()
+    std  = df.std()
+
+    # Pretty print Summary
+    print("\n" + "=" * 100)
+    print("  MULTI-SEED SUMMARY  (5 seeds: 40–44)")
+    print("=" * 100)
+    header = f"{'Metric':<20} {'Mean':>10} {'Std':>10}"
+    print(header)
+    print("-" * 42)
+    fmt_map = {
+        "accuracy":  ("{:.2f}%", "{:.2f}%"),
+        "f1_macro":  ("{:.4f}",  "{:.4f}"),
+        "f1_micro":  ("{:.4f}",  "{:.4f}"),
+        "auc_macro": ("{:.4f}",  "{:.4f}"),
+        "ap_micro":  ("{:.4f}",  "{:.4f}"),
+    }
+    for metric, (mfmt, sfmt) in fmt_map.items():
+        print(f"  {metric:<18} {mfmt.format(mean[metric]):>10} "
+              f"± {sfmt.format(std[metric]):<10}")
+    print("-" * 100)
+    
+    # ── Print Full Averaged Classification Report ──
+    print("  PER-CLASS CLASSIFICATION REPORT (Mean ± Std)")
+    print("-" * 100)
+    print(f"  {'Class':<15} {'Precision':<20} {'Recall':<20} {'F1-Score':<20} {'AUC':<20} {'Support'}")
+    print("-" * 100)
+    
+    # Per-class rows
+    for c_name in class_names:
+        precs = [rep[c_name]['precision'] for rep in all_reports]
+        recs  = [rep[c_name]['recall'] for rep in all_reports]
+        f1s   = [rep[c_name]['f1-score'] for rep in all_reports]
+        aucs  = all_aucs[c_name]
+        support = all_reports[0][c_name]['support'] # Support is same across seeds
+        
+        p_str = f"{np.mean(precs):.4f} ± {np.std(precs):.4f}"
+        r_str = f"{np.mean(recs):.4f} ± {np.std(recs):.4f}"
+        f_str = f"{np.mean(f1s):.4f} ± {np.std(f1s):.4f}"
+        a_str = f"{np.mean(aucs):.4f} ± {np.std(aucs):.4f}"
+        print(f"  {c_name:<15} {p_str:<20} {r_str:<20} {f_str:<20} {a_str:<20} {support}")
+        
+    print()
+    
+    # Averages rows
+    # Accuracy is a single number in the dict, not precision/recall/f1
+    accs = [rep['accuracy'] for rep in all_reports]
+    total_support = all_reports[0]['macro avg']['support']
+    print(f"  {'accuracy':<77} {np.mean(accs):.4f} ± {np.std(accs):.4f}  {total_support}")
+    
+    for avg_type in ['macro avg', 'weighted avg']:
+        precs = [rep[avg_type]['precision'] for rep in all_reports]
+        recs  = [rep[avg_type]['recall'] for rep in all_reports]
+        f1s   = [rep[avg_type]['f1-score'] for rep in all_reports]
+        
+        # Calculate macro AUC manually across seeds
+        if avg_type == 'macro avg':
+            aucs = [np.mean([all_aucs[c][i] for c in class_names]) for i in range(len(all_reports))]
+        else:
+            # Weighted AUC
+            aucs = [np.average([all_aucs[c][i] for c in class_names], weights=[all_reports[0][c]['support'] for c in class_names]) for i in range(len(all_reports))]
+            
+        p_str = f"{np.mean(precs):.4f} ± {np.std(precs):.4f}"
+        r_str = f"{np.mean(recs):.4f} ± {np.std(recs):.4f}"
+        f_str = f"{np.mean(f1s):.4f} ± {np.std(f1s):.4f}"
+        a_str = f"{np.mean(aucs):.4f} ± {np.std(aucs):.4f}"
+        print(f"  {avg_type:<15} {p_str:<20} {r_str:<20} {f_str:<20} {a_str:<20} {total_support}")
+        
+    print("=" * 100 + "\n")
+
+    if save_csv:
+        df.loc["mean"] = mean
+        df.loc["std"]  = std
+        df.to_csv(save_csv)
+        print(f"Summary CSV saved: {save_csv}")
+
+    return {"mean": mean.to_dict(), "std": std.to_dict(), "per_seed": df}
+
+
+def evaluate_multiseed_plots(
+    all_metrics: list,
+    class_names: list = None,
+    colors_pr: list = ['blue', 'red', 'green'],
+    colors_roc: list = ['aqua', 'darkorange', 'cornflowerblue'],
+    save_dir: str = None,
+    namkaran: str = "multiseed"
+):
+    """
+    Generate averaged plots across multiple seeds:
+    1. Averaged Confusion Matrix with standard deviation.
+    2. Averaged ROC curves with shaded standard deviation region.
+    3. Averaged PR curves with shaded standard deviation region.
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from sklearn.metrics import (
+        confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score
+    )
+    from sklearn.preprocessing import label_binarize
+    import os
+
+    if class_names is None:
+        class_names = ["ST", "SB", "SR"]
+    
+    n_classes = len(class_names)
+    n_seeds = len(all_metrics)
+    
+    # ---------------------------------------------------------
+    # 1. Averaged Confusion Matrix (Normalized to Proportions)
+    # ---------------------------------------------------------
+    all_cms = []
+    for res in all_metrics:
+        if 'confusion_matrix' in res:
+            cm = np.array(res['confusion_matrix'])
+        else:
+            cm = confusion_matrix(res['y_true'], res['y_pred'])
+        # Normalize to proportions (0.0 to 1.0) based on True Labels (rows)
+        cm_prop = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        all_cms.append(cm_prop)
+            
+    all_cms = np.array(all_cms)
+    mean_cm = np.mean(all_cms, axis=0)
+    std_cm = np.std(all_cms, axis=0)
+    
+    plt.figure(figsize=(8, 6))
+    
+    annot = np.empty_like(mean_cm, dtype=object)
+    for i in range(n_classes):
+        for j in range(n_classes):
+            annot[i, j] = f"{mean_cm[i, j]:.3f}\n± {std_cm[i, j]:.3f}"
+            
+    sns.heatmap(mean_cm, annot=annot, fmt="", cmap="Blues", cbar=True,
+                xticklabels=class_names, yticklabels=class_names, 
+                vmin=0, vmax=1.0) # Lock color scale to 0.0 - 1.0
+    
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.title('Averaged Confusion Matrix (5 Seeds, Proportions)')
+    if save_dir:
+        plt.savefig(os.path.join(save_dir, f"{namkaran}_multiseed_cm.png"), dpi=150, bbox_inches='tight')
+    plt.show()
+
+    # ---------------------------------------------------------
+    # 2. Averaged ROC Curves
+    # ---------------------------------------------------------
+    plt.figure(figsize=(8, 6))
+    
+    mean_fpr = np.linspace(0, 1, 100)
+    
+    # A. Per-class ROC
+    per_class_auc_strings = []
+    for i, color in zip(range(n_classes), colors_roc):
+        tprs = []
+        aucs = []
+        for res in all_metrics:
+            y_bin = label_binarize(res['y_true'], classes=list(range(n_classes)))
+            fpr, tpr, _ = roc_curve(y_bin[:, i], res['y_scores'][:, i])
+            
+            interp_tpr = np.interp(mean_fpr, fpr, tpr)
+            interp_tpr[0] = 0.0
+            tprs.append(interp_tpr)
+            aucs.append(auc(fpr, tpr))
+            
+        mean_tpr = np.mean(tprs, axis=0)
+        mean_tpr[-1] = 1.0
+        std_tpr = np.std(tprs, axis=0)
+        mean_auc = np.mean(aucs)
+        std_auc = np.std(aucs)
+        
+        per_class_auc_strings.append(f"Class {class_names[i]}: {mean_auc:.4f} ± {std_auc:.4f}")
+        
+        plt.plot(mean_fpr, mean_tpr, color=color,
+                 label=f'{class_names[i]} (AUC = {mean_auc:.4f} ± {std_auc:.4f})',
+                 lw=2, alpha=0.8)
+        
+        tprs_upper = np.minimum(mean_tpr + std_tpr, 1)
+        tprs_lower = np.maximum(mean_tpr - std_tpr, 0)
+        plt.fill_between(mean_fpr, tprs_lower, tprs_upper, color=color, alpha=0.2)
+
+    # B. Micro-average ROC
+    tprs_micro = []
+    aucs_micro = []
+    for res in all_metrics:
+        y_bin = label_binarize(res['y_true'], classes=list(range(n_classes)))
+        fpr_micro, tpr_micro, _ = roc_curve(y_bin.ravel(), res['y_scores'].ravel())
+        interp_tpr = np.interp(mean_fpr, fpr_micro, tpr_micro)
+        interp_tpr[0] = 0.0
+        tprs_micro.append(interp_tpr)
+        aucs_micro.append(auc(fpr_micro, tpr_micro))
+        
+    mean_tpr_micro = np.mean(tprs_micro, axis=0)
+    mean_tpr_micro[-1] = 1.0
+    mean_auc_micro = np.mean(aucs_micro)
+    std_auc_micro = np.std(aucs_micro)
+    
+    plt.plot(mean_fpr, mean_tpr_micro, color='deeppink', linestyle=':',
+             label=f'Micro-average (AUC = {mean_auc_micro:.4f} ± {std_auc_micro:.4f})',
+             lw=2, alpha=0.8)
+
+    # C. Macro-average ROC
+    tprs_macro = []
+    aucs_macro = []
+    for res in all_metrics:
+        y_bin = label_binarize(res['y_true'], classes=list(range(n_classes)))
+        seed_macro_tpr = np.zeros_like(mean_fpr)
+        for i in range(n_classes):
+            fpr, tpr, _ = roc_curve(y_bin[:, i], res['y_scores'][:, i])
+            interp_tpr = np.interp(mean_fpr, fpr, tpr)
+            interp_tpr[0] = 0.0
+            seed_macro_tpr += interp_tpr
+        seed_macro_tpr /= n_classes
+        tprs_macro.append(seed_macro_tpr)
+        aucs_macro.append(auc(mean_fpr, seed_macro_tpr))
+        
+    mean_tpr_macro = np.mean(tprs_macro, axis=0)
+    mean_tpr_macro[-1] = 1.0
+    mean_auc_macro = np.mean(aucs_macro)
+    std_auc_macro = np.std(aucs_macro)
+    
+    plt.plot(mean_fpr, mean_tpr_macro, color='navy', linestyle=':',
+             label=f'Macro-average (AUC = {mean_auc_macro:.4f} ± {std_auc_macro:.4f})',
+             lw=2, alpha=0.8)
+
+    plt.plot([0, 1], [0, 1], 'k--', lw=2, label='Random Classifier')
+    plt.xlim([-0.05, 1.05])
+    plt.ylim([-0.05, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Averaged ROC Curves (5 Seeds)')
+    plt.legend(loc="lower right")
+    plt.grid(True, alpha=0.3)
+    if save_dir:
+        plt.savefig(os.path.join(save_dir, f"{namkaran}_multiseed_roc.png"), dpi=150, bbox_inches='tight')
+    plt.show()
+
+    # Print AUC scores
+    print("AUC Scores (Mean ± Std):")
+    print("-" * 30)
+    for auc_str in per_class_auc_strings:
+        print(auc_str)
+    print(f"Micro-average: {mean_auc_micro:.4f} ± {std_auc_micro:.4f}")
+    print(f"Macro-average: {mean_auc_macro:.4f} ± {std_auc_macro:.4f}")
+    print("-" * 30 + "\n")
+
+    # ---------------------------------------------------------
+    # 3. Averaged PR Curves
+    # ---------------------------------------------------------
+    plt.figure(figsize=(8, 6))
+    
+    mean_recall = np.linspace(0, 1, 100)
+    
+    # A. Per-class PR
+    for i, color in zip(range(n_classes), colors_pr):
+        precisions = []
+        aps = []
+        for res in all_metrics:
+            y_bin = label_binarize(res['y_true'], classes=list(range(n_classes)))
+            precision, recall, _ = precision_recall_curve(y_bin[:, i], res['y_scores'][:, i])
+            
+            interp_prec = np.interp(mean_recall, recall[::-1], precision[::-1])
+            precisions.append(interp_prec)
+            aps.append(average_precision_score(y_bin[:, i], res['y_scores'][:, i]))
+            
+        mean_prec = np.mean(precisions, axis=0)
+        std_prec = np.std(precisions, axis=0)
+        mean_ap = np.mean(aps)
+        std_ap = np.std(aps)
+        
+        plt.plot(mean_recall, mean_prec, color=color,
+                 label=f'{class_names[i]} (AP = {mean_ap:.4f} ± {std_ap:.4f})',
+                 lw=2, alpha=0.8)
+        
+        prec_upper = np.minimum(mean_prec + std_prec, 1)
+        prec_lower = np.maximum(mean_prec - std_prec, 0)
+        plt.fill_between(mean_recall, prec_lower, prec_upper, color=color, alpha=0.2)
+
+    # B. Micro-average PR
+    precs_micro = []
+    aps_micro = []
+    for res in all_metrics:
+        y_bin = label_binarize(res['y_true'], classes=list(range(n_classes)))
+        precision_micro, recall_micro, _ = precision_recall_curve(y_bin.ravel(), res['y_scores'].ravel())
+        interp_prec = np.interp(mean_recall, recall_micro[::-1], precision_micro[::-1])
+        precs_micro.append(interp_prec)
+        aps_micro.append(average_precision_score(y_bin.ravel(), res['y_scores'].ravel()))
+        
+    mean_prec_micro = np.mean(precs_micro, axis=0)
+    mean_ap_micro = np.mean(aps_micro)
+    std_ap_micro = np.std(aps_micro)
+    
+    plt.plot(mean_recall, mean_prec_micro, color='gold', linestyle='--',
+             label=f'Micro-average (AP = {mean_ap_micro:.4f} ± {std_ap_micro:.4f})',
+             lw=2, alpha=0.8)
+
+    plt.xlim([-0.05, 1.05])
+    plt.ylim([-0.05, 1.05])
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Averaged PR Curves (5 Seeds)')
+    plt.legend(loc="lower left")
+    plt.grid(True, alpha=0.3)
+    if save_dir:
+        plt.savefig(os.path.join(save_dir, f"{namkaran}_multiseed_pr.png"), dpi=150, bbox_inches='tight')
+    plt.show()

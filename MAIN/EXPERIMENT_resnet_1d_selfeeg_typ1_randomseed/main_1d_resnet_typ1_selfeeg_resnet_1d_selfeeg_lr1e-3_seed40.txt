@@ -1,0 +1,27 @@
+
+============================================================
+Training Run Started for Seed 40: 2026-07-02 13:53:18
+============================================================
+
+============================================================
+Training Run Started for Seed 40: 2026-07-02 14:48:06
+============================================================
+Epoch [1/25] | Train Loss: 0.3733, Val Loss: 0.1213, Train Acc: 84.85%, Val Acc: 95.89%, LR: 0.001000 | Time: 247.47s
+Epoch [2/25] | Train Loss: 0.1643, Val Loss: 0.0937, Train Acc: 93.85%, Val Acc: 96.86%, LR: 0.001000 | Time: 248.70s
+Epoch [3/25] | Train Loss: 0.1578, Val Loss: 0.0877, Train Acc: 94.06%, Val Acc: 97.48%, LR: 0.001000 | Time: 249.01s
+Epoch [4/25] | Train Loss: 0.1218, Val Loss: 0.1036, Train Acc: 95.64%, Val Acc: 95.78%, LR: 0.001000 | Time: 248.96s
+Epoch [5/25] | Train Loss: 0.0978, Val Loss: 0.0639, Train Acc: 96.37%, Val Acc: 97.89%, LR: 0.001000 | Time: 249.02s
+Epoch [6/25] | Train Loss: 0.0905, Val Loss: 0.0560, Train Acc: 96.67%, Val Acc: 98.10%, LR: 0.001000 | Time: 249.04s
+Epoch [7/25] | Train Loss: 0.0999, Val Loss: 0.0739, Train Acc: 96.66%, Val Acc: 97.28%, LR: 0.001000 | Time: 249.08s
+Epoch [8/25] | Train Loss: 0.0866, Val Loss: 0.0882, Train Acc: 96.84%, Val Acc: 96.61%, LR: 0.001000 | Time: 249.18s
+  >> Learning rate reduced: 0.001000 -> 0.000500
+Epoch [9/25] | Train Loss: 0.0908, Val Loss: 0.0615, Train Acc: 96.66%, Val Acc: 97.94%, LR: 0.000500 | Time: 249.08s
+Epoch [10/25] | Train Loss: 0.0587, Val Loss: 0.0538, Train Acc: 98.13%, Val Acc: 97.69%, LR: 0.000500 | Time: 249.01s
+Epoch [11/25] | Train Loss: 0.0536, Val Loss: 0.0518, Train Acc: 98.15%, Val Acc: 98.05%, LR: 0.000500 | Time: 249.05s
+Epoch [12/25] | Train Loss: 0.0614, Val Loss: 0.0802, Train Acc: 97.81%, Val Acc: 97.02%, LR: 0.000500 | Time: 249.08s
+## Early stopping at epoch 13 ##
+
+Best Validation Accuracy: 98.10%
+============================================================
+Total Training Time: 3235.76s
+Evaluating best model on test set for seed 40...

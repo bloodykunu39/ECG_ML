@@ -1,0 +1,50 @@
+
+============================================================
+Training Run Started for Seed 42: 2026-07-02 11:25:18
+============================================================
+Epoch [1/25] | Train Loss: 0.6733, Val Loss: 0.4270, Train Acc: 68.56%, Val Acc: 82.09%, LR: 0.000100 | Time: 7.75s
+Epoch [2/25] | Train Loss: 0.4152, Val Loss: 0.3932, Train Acc: 82.97%, Val Acc: 83.74%, LR: 0.000100 | Time: 7.75s
+Epoch [3/25] | Train Loss: 0.3598, Val Loss: 0.3387, Train Acc: 85.59%, Val Acc: 86.68%, LR: 0.000100 | Time: 7.75s
+Epoch [4/25] | Train Loss: 0.3095, Val Loss: 0.2913, Train Acc: 87.59%, Val Acc: 88.33%, LR: 0.000100 | Time: 7.79s
+Epoch [5/25] | Train Loss: 0.2794, Val Loss: 0.3120, Train Acc: 89.03%, Val Acc: 87.39%, LR: 0.000100 | Time: 7.77s
+Epoch [6/25] | Train Loss: 0.2663, Val Loss: 0.2728, Train Acc: 89.67%, Val Acc: 89.53%, LR: 0.000100 | Time: 7.76s
+Epoch [7/25] | Train Loss: 0.2447, Val Loss: 0.2613, Train Acc: 90.81%, Val Acc: 89.93%, LR: 0.000100 | Time: 7.82s
+Epoch [8/25] | Train Loss: 0.2255, Val Loss: 0.2951, Train Acc: 91.36%, Val Acc: 88.37%, LR: 0.000100 | Time: 7.82s
+Epoch [9/25] | Train Loss: 0.2057, Val Loss: 0.4676, Train Acc: 92.41%, Val Acc: 81.65%, LR: 0.000100 | Time: 7.87s
+  >> Learning rate reduced: 0.000100 -> 0.000050
+Epoch [10/25] | Train Loss: 0.2054, Val Loss: 0.2656, Train Acc: 92.20%, Val Acc: 89.93%, LR: 0.000050 | Time: 7.83s
+Epoch [11/25] | Train Loss: 0.1556, Val Loss: 0.2732, Train Acc: 94.56%, Val Acc: 89.80%, LR: 0.000050 | Time: 7.78s
+Epoch [12/25] | Train Loss: 0.1468, Val Loss: 0.2696, Train Acc: 94.85%, Val Acc: 89.67%, LR: 0.000050 | Time: 7.78s
+  >> Learning rate reduced: 0.000050 -> 0.000025
+Epoch [13/25] | Train Loss: 0.1336, Val Loss: 0.3567, Train Acc: 95.57%, Val Acc: 88.11%, LR: 0.000025 | Time: 7.79s
+## Early stopping at epoch 14 ##
+
+Best Validation Accuracy: 89.93%
+============================================================
+Total Training Time: 109.09s
+Evaluating best model on test set for seed 42...
+
+============================================================
+Training Run Started for Seed 42: 2026-07-02 12:17:43
+============================================================
+Epoch [1/25] | Train Loss: 0.6733, Val Loss: 0.4270, Train Acc: 68.56%, Val Acc: 82.09%, LR: 0.000100 | Time: 7.80s
+Epoch [2/25] | Train Loss: 0.4152, Val Loss: 0.3932, Train Acc: 82.97%, Val Acc: 83.74%, LR: 0.000100 | Time: 7.85s
+Epoch [3/25] | Train Loss: 0.3598, Val Loss: 0.3387, Train Acc: 85.59%, Val Acc: 86.68%, LR: 0.000100 | Time: 7.85s
+Epoch [4/25] | Train Loss: 0.3095, Val Loss: 0.2913, Train Acc: 87.59%, Val Acc: 88.33%, LR: 0.000100 | Time: 7.85s
+Epoch [5/25] | Train Loss: 0.2794, Val Loss: 0.3120, Train Acc: 89.03%, Val Acc: 87.39%, LR: 0.000100 | Time: 7.85s
+Epoch [6/25] | Train Loss: 0.2663, Val Loss: 0.2728, Train Acc: 89.67%, Val Acc: 89.53%, LR: 0.000100 | Time: 7.83s
+Epoch [7/25] | Train Loss: 0.2447, Val Loss: 0.2613, Train Acc: 90.81%, Val Acc: 89.93%, LR: 0.000100 | Time: 7.89s
+Epoch [8/25] | Train Loss: 0.2255, Val Loss: 0.2951, Train Acc: 91.36%, Val Acc: 88.37%, LR: 0.000100 | Time: 7.85s
+Epoch [9/25] | Train Loss: 0.2057, Val Loss: 0.4676, Train Acc: 92.41%, Val Acc: 81.65%, LR: 0.000100 | Time: 7.86s
+  >> Learning rate reduced: 0.000100 -> 0.000050
+Epoch [10/25] | Train Loss: 0.2054, Val Loss: 0.2656, Train Acc: 92.20%, Val Acc: 89.93%, LR: 0.000050 | Time: 7.85s
+Epoch [11/25] | Train Loss: 0.1556, Val Loss: 0.2732, Train Acc: 94.56%, Val Acc: 89.80%, LR: 0.000050 | Time: 7.85s
+Epoch [12/25] | Train Loss: 0.1468, Val Loss: 0.2696, Train Acc: 94.85%, Val Acc: 89.67%, LR: 0.000050 | Time: 7.82s
+  >> Learning rate reduced: 0.000050 -> 0.000025
+Epoch [13/25] | Train Loss: 0.1336, Val Loss: 0.3567, Train Acc: 95.57%, Val Acc: 88.11%, LR: 0.000025 | Time: 7.81s
+## Early stopping at epoch 14 ##
+
+Best Validation Accuracy: 89.93%
+============================================================
+Total Training Time: 109.74s
+Evaluating best model on test set for seed 42...

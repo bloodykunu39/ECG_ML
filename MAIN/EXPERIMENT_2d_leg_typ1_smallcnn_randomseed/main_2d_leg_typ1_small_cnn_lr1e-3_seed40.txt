@@ -1,0 +1,39 @@
+
+============================================================
+Training Run Started: 2026-07-02 06:09:19
+Seed: 40
+============================================================
+Epoch [1/25] | Train Loss: 0.3779, Val Loss: 0.2184, Train Acc: 83.66%, Val Acc: 93.01%, LR: 0.001000 | Time: 5.39s (Train: 5.06s, Val: 0.33s)
+Epoch [2/25] | Train Loss: 0.1941, Val Loss: 0.1362, Train Acc: 93.09%, Val Acc: 94.81%, LR: 0.001000 | Time: 5.16s (Train: 4.83s, Val: 0.33s)
+Epoch [3/25] | Train Loss: 0.1587, Val Loss: 0.1238, Train Acc: 94.27%, Val Acc: 94.96%, LR: 0.001000 | Time: 5.16s (Train: 4.83s, Val: 0.33s)
+Epoch [4/25] | Train Loss: 0.1325, Val Loss: 0.2064, Train Acc: 95.09%, Val Acc: 93.68%, LR: 0.001000 | Time: 5.16s (Train: 4.83s, Val: 0.33s)
+Epoch [5/25] | Train Loss: 0.1242, Val Loss: 0.0754, Train Acc: 95.48%, Val Acc: 97.53%, LR: 0.001000 | Time: 5.16s (Train: 4.83s, Val: 0.33s)
+Epoch [6/25] | Train Loss: 0.1068, Val Loss: 0.1339, Train Acc: 96.13%, Val Acc: 93.93%, LR: 0.001000 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+Epoch [7/25] | Train Loss: 0.1036, Val Loss: 0.0899, Train Acc: 96.25%, Val Acc: 96.86%, LR: 0.001000 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+  >> LR reduced: 0.001000 -> 0.000500
+Epoch [8/25] | Train Loss: 0.0960, Val Loss: 0.0832, Train Acc: 96.53%, Val Acc: 97.17%, LR: 0.000500 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+Epoch [9/25] | Train Loss: 0.0799, Val Loss: 0.0685, Train Acc: 97.07%, Val Acc: 97.58%, LR: 0.000500 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+Epoch [10/25] | Train Loss: 0.0811, Val Loss: 0.0683, Train Acc: 97.11%, Val Acc: 97.53%, LR: 0.000500 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+Epoch [11/25] | Train Loss: 0.0650, Val Loss: 0.0773, Train Acc: 97.77%, Val Acc: 97.53%, LR: 0.000500 | Time: 5.17s (Train: 4.84s, Val: 0.33s)
+Epoch [12/25] | Train Loss: 0.0749, Val Loss: 0.0703, Train Acc: 97.26%, Val Acc: 97.33%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [13/25] | Train Loss: 0.0674, Val Loss: 0.0649, Train Acc: 97.70%, Val Acc: 97.84%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [14/25] | Train Loss: 0.0676, Val Loss: 0.0803, Train Acc: 97.53%, Val Acc: 96.71%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [15/25] | Train Loss: 0.0646, Val Loss: 0.0557, Train Acc: 97.74%, Val Acc: 98.10%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [16/25] | Train Loss: 0.0632, Val Loss: 0.0827, Train Acc: 97.60%, Val Acc: 96.97%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [17/25] | Train Loss: 0.0639, Val Loss: 0.0538, Train Acc: 97.79%, Val Acc: 98.20%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [18/25] | Train Loss: 0.0593, Val Loss: 0.0597, Train Acc: 98.06%, Val Acc: 98.15%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [19/25] | Train Loss: 0.0581, Val Loss: 0.0690, Train Acc: 98.12%, Val Acc: 97.63%, LR: 0.000500 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+  >> LR reduced: 0.000500 -> 0.000250
+Epoch [20/25] | Train Loss: 0.0589, Val Loss: 0.0800, Train Acc: 97.93%, Val Acc: 97.12%, LR: 0.000250 | Time: 5.18s (Train: 4.85s, Val: 0.33s)
+Epoch [21/25] | Train Loss: 0.0452, Val Loss: 0.0576, Train Acc: 98.33%, Val Acc: 98.10%, LR: 0.000250 | Time: 5.19s (Train: 4.86s, Val: 0.33s)
+Epoch [22/25] | Train Loss: 0.0454, Val Loss: 0.0660, Train Acc: 98.50%, Val Acc: 97.94%, LR: 0.000250 | Time: 5.19s (Train: 4.86s, Val: 0.33s)
+  >> LR reduced: 0.000250 -> 0.000125
+Epoch [23/25] | Train Loss: 0.0437, Val Loss: 0.0577, Train Acc: 98.51%, Val Acc: 98.10%, LR: 0.000125 | Time: 5.19s (Train: 4.86s, Val: 0.33s)
+Epoch [24/25] | Train Loss: 0.0423, Val Loss: 0.0549, Train Acc: 98.50%, Val Acc: 98.41%, LR: 0.000125 | Time: 5.19s (Train: 4.86s, Val: 0.33s)
+Epoch [25/25] | Train Loss: 0.0398, Val Loss: 0.0564, Train Acc: 98.62%, Val Acc: 98.15%, LR: 0.000125 | Time: 5.19s (Train: 4.86s, Val: 0.33s)
+
+Best Validation Accuracy: 98.41%
+Test Accuracy: 98.41% (Time: 0.33s)
+============================================================
+Total Training Time: 129.64s (2.16 min)
+✅ Training complete.

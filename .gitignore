@@ -13,3 +13,5 @@ kupa.ipynb
 MAIN/encoding2.py
 MAIN/ML/smooth_using _normlised _legendre_old.ipynb
 MAIN/ML/smooth_using _normlised _legendre copy.ipynb
+!MAIN/EXPERIMENT_*/*.txt
+!MAIN/EXPERIMENT_*/*/*.txt

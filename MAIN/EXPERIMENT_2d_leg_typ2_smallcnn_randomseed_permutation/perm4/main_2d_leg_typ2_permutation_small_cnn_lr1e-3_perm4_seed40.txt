@@ -1,0 +1,74 @@
+
+============================================================
+Training Run Started: 2026-07-26 04:36:38
+Seed: 40
+============================================================
+Epoch [1/25] | Train Loss: 0.4329, Val Loss: 0.1851, Train Acc: 82.24%, Val Acc: 93.32%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [2/25] | Train Loss: 0.2200, Val Loss: 0.1521, Train Acc: 92.68%, Val Acc: 94.48%, LR: 0.001000 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [3/25] | Train Loss: 0.1936, Val Loss: 0.1575, Train Acc: 93.56%, Val Acc: 94.25%, LR: 0.001000 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [4/25] | Train Loss: 0.1750, Val Loss: 0.1531, Train Acc: 94.27%, Val Acc: 94.48%, LR: 0.001000 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [5/25] | Train Loss: 0.1629, Val Loss: 0.1158, Train Acc: 94.64%, Val Acc: 96.26%, LR: 0.001000 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [6/25] | Train Loss: 0.1515, Val Loss: 0.1112, Train Acc: 95.37%, Val Acc: 96.75%, LR: 0.001000 | Time: 6.14s (Train: 5.74s, Val: 0.39s)
+Epoch [7/25] | Train Loss: 0.1518, Val Loss: 0.1489, Train Acc: 94.95%, Val Acc: 94.92%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [8/25] | Train Loss: 0.1381, Val Loss: 0.1035, Train Acc: 95.82%, Val Acc: 96.48%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [9/25] | Train Loss: 0.1475, Val Loss: 0.1031, Train Acc: 95.24%, Val Acc: 96.79%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [10/25] | Train Loss: 0.1274, Val Loss: 0.1558, Train Acc: 95.99%, Val Acc: 95.01%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [11/25] | Train Loss: 0.1259, Val Loss: 0.1547, Train Acc: 95.86%, Val Acc: 94.43%, LR: 0.001000 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+  >> LR reduced: 0.001000 -> 0.000500
+Epoch [12/25] | Train Loss: 0.1188, Val Loss: 0.1435, Train Acc: 95.88%, Val Acc: 94.83%, LR: 0.000500 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [13/25] | Train Loss: 0.1032, Val Loss: 0.1138, Train Acc: 96.55%, Val Acc: 96.44%, LR: 0.000500 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [14/25] | Train Loss: 0.1008, Val Loss: 0.0820, Train Acc: 96.60%, Val Acc: 97.46%, LR: 0.000500 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [15/25] | Train Loss: 0.0984, Val Loss: 0.0998, Train Acc: 96.77%, Val Acc: 96.66%, LR: 0.000500 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [16/25] | Train Loss: 0.0916, Val Loss: 0.0905, Train Acc: 96.90%, Val Acc: 97.10%, LR: 0.000500 | Time: 6.15s (Train: 5.75s, Val: 0.39s)
+  >> LR reduced: 0.000500 -> 0.000250
+Epoch [17/25] | Train Loss: 0.0910, Val Loss: 0.0829, Train Acc: 96.81%, Val Acc: 97.33%, LR: 0.000250 | Time: 6.15s (Train: 5.75s, Val: 0.39s)
+Epoch [18/25] | Train Loss: 0.0774, Val Loss: 0.0795, Train Acc: 97.45%, Val Acc: 97.37%, LR: 0.000250 | Time: 6.15s (Train: 5.75s, Val: 0.39s)
+Epoch [19/25] | Train Loss: 0.0738, Val Loss: 0.0963, Train Acc: 97.56%, Val Acc: 96.84%, LR: 0.000250 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+Epoch [20/25] | Train Loss: 0.0745, Val Loss: 0.0851, Train Acc: 97.55%, Val Acc: 97.37%, LR: 0.000250 | Time: 6.15s (Train: 5.75s, Val: 0.39s)
+  >> LR reduced: 0.000250 -> 0.000125
+## Early stopping at epoch 21 ##
+
+Best Validation Accuracy: 97.46%
+Test Accuracy: 96.71% (Time: 0.39s)
+============================================================
+Total Training Time: 128.95s (2.15 min)
+✅ Training complete.
+
+============================================================
+Training Run Started: 2026-07-26 19:59:27
+Seed: 40
+============================================================
+Epoch [1/25] | Train Loss: 0.4026, Val Loss: 0.1664, Train Acc: 84.07%, Val Acc: 95.28%, LR: 0.001000 | Time: 6.34s (Train: 5.95s, Val: 0.39s)
+Epoch [2/25] | Train Loss: 0.2183, Val Loss: 0.2124, Train Acc: 92.55%, Val Acc: 92.20%, LR: 0.001000 | Time: 6.12s (Train: 5.73s, Val: 0.39s)
+Epoch [3/25] | Train Loss: 0.1931, Val Loss: 0.2146, Train Acc: 93.43%, Val Acc: 92.65%, LR: 0.001000 | Time: 6.12s (Train: 5.73s, Val: 0.39s)
+Epoch [4/25] | Train Loss: 0.1789, Val Loss: 0.1093, Train Acc: 93.91%, Val Acc: 96.70%, LR: 0.001000 | Time: 6.11s (Train: 5.72s, Val: 0.39s)
+Epoch [5/25] | Train Loss: 0.1643, Val Loss: 0.1109, Train Acc: 94.69%, Val Acc: 96.70%, LR: 0.001000 | Time: 6.11s (Train: 5.72s, Val: 0.39s)
+Epoch [6/25] | Train Loss: 0.1556, Val Loss: 0.1045, Train Acc: 94.96%, Val Acc: 96.88%, LR: 0.001000 | Time: 6.12s (Train: 5.72s, Val: 0.39s)
+Epoch [7/25] | Train Loss: 0.1566, Val Loss: 0.1215, Train Acc: 94.77%, Val Acc: 96.04%, LR: 0.001000 | Time: 6.11s (Train: 5.72s, Val: 0.39s)
+Epoch [8/25] | Train Loss: 0.1431, Val Loss: 0.1019, Train Acc: 95.43%, Val Acc: 96.88%, LR: 0.001000 | Time: 6.12s (Train: 5.73s, Val: 0.39s)
+Epoch [9/25] | Train Loss: 0.1385, Val Loss: 0.0999, Train Acc: 95.40%, Val Acc: 96.97%, LR: 0.001000 | Time: 6.12s (Train: 5.73s, Val: 0.39s)
+Epoch [10/25] | Train Loss: 0.1287, Val Loss: 0.1926, Train Acc: 95.92%, Val Acc: 94.12%, LR: 0.001000 | Time: 6.13s (Train: 5.73s, Val: 0.39s)
+Epoch [11/25] | Train Loss: 0.1235, Val Loss: 0.1179, Train Acc: 96.15%, Val Acc: 95.81%, LR: 0.001000 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+  >> LR reduced: 0.001000 -> 0.000500
+Epoch [12/25] | Train Loss: 0.1233, Val Loss: 0.1254, Train Acc: 95.78%, Val Acc: 95.55%, LR: 0.000500 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [13/25] | Train Loss: 0.1025, Val Loss: 0.1027, Train Acc: 96.67%, Val Acc: 96.79%, LR: 0.000500 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [14/25] | Train Loss: 0.0973, Val Loss: 0.0845, Train Acc: 96.89%, Val Acc: 97.24%, LR: 0.000500 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [15/25] | Train Loss: 0.0972, Val Loss: 0.0989, Train Acc: 96.58%, Val Acc: 96.61%, LR: 0.000500 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [16/25] | Train Loss: 0.0942, Val Loss: 0.0954, Train Acc: 96.94%, Val Acc: 96.61%, LR: 0.000500 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+  >> LR reduced: 0.000500 -> 0.000250
+Epoch [17/25] | Train Loss: 0.0911, Val Loss: 0.0869, Train Acc: 96.91%, Val Acc: 97.24%, LR: 0.000250 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [18/25] | Train Loss: 0.0797, Val Loss: 0.0833, Train Acc: 97.48%, Val Acc: 97.19%, LR: 0.000250 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [19/25] | Train Loss: 0.0767, Val Loss: 0.0845, Train Acc: 97.37%, Val Acc: 97.15%, LR: 0.000250 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [20/25] | Train Loss: 0.0789, Val Loss: 0.0803, Train Acc: 97.29%, Val Acc: 97.37%, LR: 0.000250 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [21/25] | Train Loss: 0.0755, Val Loss: 0.1084, Train Acc: 97.41%, Val Acc: 96.48%, LR: 0.000250 | Time: 6.14s (Train: 5.74s, Val: 0.39s)
+Epoch [22/25] | Train Loss: 0.0690, Val Loss: 0.0924, Train Acc: 97.59%, Val Acc: 96.70%, LR: 0.000250 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+  >> LR reduced: 0.000250 -> 0.000125
+Epoch [23/25] | Train Loss: 0.0683, Val Loss: 0.0915, Train Acc: 97.67%, Val Acc: 97.19%, LR: 0.000125 | Time: 6.13s (Train: 5.74s, Val: 0.39s)
+Epoch [24/25] | Train Loss: 0.0641, Val Loss: 0.0794, Train Acc: 97.84%, Val Acc: 97.51%, LR: 0.000125 | Time: 6.14s (Train: 5.74s, Val: 0.39s)
+Epoch [25/25] | Train Loss: 0.0597, Val Loss: 0.0832, Train Acc: 98.09%, Val Acc: 97.37%, LR: 0.000125 | Time: 6.14s (Train: 5.75s, Val: 0.39s)
+
+Best Validation Accuracy: 97.51%
+Test Accuracy: 97.28% (Time: 0.39s)
+============================================================
+Total Training Time: 153.37s (2.56 min)
+✅ Training complete.

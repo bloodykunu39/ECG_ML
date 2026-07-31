@@ -18,6 +18,16 @@ improve the classification of 12-lead ECG images.
 - Preprocessing pipeline for 12-lead ECG image data
 - Performance comparison with traditional deep learning approaches
 
+## Repository Guide
+
+- **`MAIN/`** — all code, notebooks, data, and results, organized into `src/` (modules),
+  `data_preparation/` (raw → filtered → encoded data pipeline), `run_experiments/` (one real
+  folder per paper experiment), `invertibility/`, `analysis_and_utilities/`,
+  `exploratory_notebooks/`, and `assets/`. See **[`MAIN/README.md`](./MAIN/README.md)** for
+  the full guide, and **[`MAIN/run_experiments/README.md`](./MAIN/run_experiments/README.md)**
+  for an index mapping every experiment in the paper (Results §3, Discussion §4.2) directly to
+  its run notebook and results folder.
+
 ## Getting Started
 
 ### Prerequisites

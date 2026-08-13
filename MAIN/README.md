@@ -1,102 +1,134 @@
 # ECG Classification using High Energy Physics-Inspired ML Techniques
 
-This project focuses on classifying 12-lead Electrocardiogram (ECG) signals using machine learning techniques inspired by high-energy physics. We explore representation encoding, such as mapping 1D ECG signals into 2D spaces using Legendre, Chebyshev, and Hermite polynomials, and training deep learning models (CNNs, ResNets, Transformers) on these encoded representations.
+This project classifies 12-lead ECG signals using an orthogonal-polynomial imaging (OPI)
+encoding — inspired by partial-wave decomposition in high-energy physics — that maps
+multi-lead 1D signals into a single 2D image, then benchmarks CNNs/ResNets/Transformers
+trained on that representation against several raw-signal baselines. 
 
 ---
 
-## 📂 Project Structure & Directory Layout
+## 🧭 Start here
 
-### Core Directories
-
-* **`ML/`**: Contains encoded ECG images and datasets, along with script files for downsampling and generation.
-* **`data_prep/`**: Preprocessing scripts and filtered `.npy` files for raw ECG signals.
-* **`final_output/`**: Stores finalized model checkpoints and outputs.
-* **`invertibility/`**: Exploratory code testing the invertibility of encoded representations back to original 1D ECG signals.
-* **`zenodo_data/`**: Raw and extracted data source folders.
-* **`Example ECG/`**: Contains example raw 12-lead ECG reports (e.g., in `.mat` format).
-* **`ARCHIVE/`**: Folder for deprecated, historical, or backup notebooks (such as `main_1_cnn*`, `main_cnn100_cheb*`, and `PatchTST`-based code).
-* **`Other files/`**: Miscellaneous assets and scratch documents.
-
-### Experiment Result Folders (`EXPERIMENT_*`)
-These directories store result plots (accuracy curves, loss curves, confusion matrices, PR/ROC curves) and summary CSVs across multiple seeds for each notebook:
-* `EXPERIMENT_1d_firstlead_ffnn_typ1_randomseed/`
-* `EXPERIMENT_1d_firstlead_ffnn_typ2_randomseed/`
-* `EXPERIMENT_2d_cheb_typ1_smallcnn_randomseed/`
-* `EXPERIMENT_2d_cheb_typ2_smallcnn_randomseed/`
-* `EXPERIMENT_2d_leg_50_typ1_smallcnn_randomseed/`
-* `EXPERIMENT_2d_leg_50_typ2_smallcnn_randomseed/`
-* `EXPERIMENT_2d_leg_typ1_smallcnn_randomseed/`
-* `EXPERIMENT_2d_leg_typ2_smallcnn_randomseed/`
-* `EXPERIMENT_2d_resnet_ECGresnet_randomseed/`
-* `EXPERIMENT_2d_resnet_typ1_ECGresnet_randomseed/`
-* `EXPERIMENT_2d_resnet_typ1_ECGresnet_pretrain_FALSE_randomseed/`
-* `EXPERIMENT_2d_resnet_typ2_ECGresnet_pretrain_FALSE_randomseed/`
-* `EXPERIMENT_2d_transformer_typ1_VanillaTransformerECG_randomseed/`
-* `EXPERIMENT_2d_transformer_typ2_VanillaTransformerECG_randomseed/`
-* `EXPERIMENT_resnet_1d_selfeeg_typ1_randomseed/`
-* `EXPERIMENT_resnet_1d_selfeeg_typ2_randomseed/`
-* `EXPERIMENT_resnet_1d_selfeeg_typ1_singlelead1_randomseed/`
-* `EXPERIMENT_resnet_1d_selfeeg_typ2_singlelead1_randomseed/`
+**[`run_experiments/README.md`](./run_experiments/README.md)** indexes every experiment in
+the paper's Results (§3) and Discussion (§4.2) by section number, linking each to its real
+run notebook and results folder. That's the fastest way to find "the notebook that made
+Figure/Table N."
 
 ---
 
-## 📑 Experiment & Utility Notebooks
+## 📂 Folder Layout
 
-### Model Training Notebooks
-These notebooks contain the main pipelines for training classifiers on 1D/2D representations:
+```
+MAIN/
+├── src/                    Core Python modules (the only real copies — see src/README.md)
+├── data_preparation/       Raw data → filtered signals → OPI-encoded images (see its README)
+│   ├── zenodo_data/           raw PhysioNet extraction
+│   ├── data_prep/             disease filtering → Type 1 / Type 2 .npy datasets
+│   ├── ML/                    polynomial encoding + coarse-graining → image datasets
+│   └── save_data.ipynb        export utility
+├── run_experiments/        One real folder per paper experiment (notebook + its results)
+│   └── <paper §>_<name>/      e.g. 3.1.1_OPI_Legendre_Type1_CNN100/
+├── invertibility/          Paper §3.9 — reconstruction-error analysis (self-contained)
+├── analysis_and_utilities/ Cross-experiment tools: analysis.ipynb, Extractor.ipynb, 12leadstack.ipynb
+├── exploratory_notebooks/  Early scratch notebooks, not part of the paper (cg_200.ipynb, superpostion_inverse.ipynb)
+├── assets/                 Static images/example files, not read by any code
+├── data_prep, ML            (compatibility symlinks → data_preparation/*, see note below)
+├── _junk/                  Sandbox-generated debris from building this index — safe to delete manually
+└── README.md               This file
+```
 
-| Notebook | Model / Architecture | Representation / Encoding | Input Shape | Data Type | Notes |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| [`main_2d_cheb_typ1.ipynb`](./main_2d_cheb_typ1.ipynb) | SmallCNN | Chebyshev Polynomials | 100×100 | Type 1 | Training pipeline on Type 1 data |
-| [`main_2d_cheb_typ2.ipynb`](./main_2d_cheb_typ2.ipynb) | SmallCNN | Chebyshev Polynomials | 100×100 | Type 2 | Training pipeline on Type 2 data |
-| [`main_2d_leg_typ1.ipynb`](./main_2d_leg_typ1.ipynb) | SmallCNN | Legendre Polynomials | 100×100 | Type 1 | Coarse-grained (cg50) Legendre Type-1 |
-| [`main_2d_leg_typ2.ipynb`](./main_2d_leg_typ2.ipynb) | SmallCNN | Legendre Polynomials | 100×100 | Type 2 | Coarse-grained (cg50) Legendre Type-2 |
-| [`main_2d_leg_on_50_typ1.ipynb`](./main_2d_leg_on_50_typ1.ipynb) | SmallCNN | Legendre Polynomials | 50×50 | Type 1 | Reduced 50x50 resolution |
-| [`main_2d_leg_on_50_typ2.ipynb`](./main_2d_leg_on_50_typ2.ipynb) | SmallCNN | Legendre Polynomials | 50×50 | Type 2 | Reduced 50x50 resolution |
-| [`main_2d_resnet_typ1.ipynb`](./main_2d_resnet_typ1.ipynb) | ECGResNet | 2D Representation | 100×100 | Type 1 | Pretrained = True configuration |
-| [`main_2d_resnet_typ2.ipynb`](./main_2d_resnet_typ2.ipynb) | ECGResNet | 2D Representation | 100×100 | Type 2 | Pretrained = True configuration |
-| [`main_2d_resnet_typ1_pretrained_False.ipynb`](./main_2d_resnet_typ1_pretrained_False.ipynb) | ECGResNet | 2D Representation | 100×100 | Type 1 | Pretrained = False configuration |
-| [`main_2d_resnet_typ2_pretrained_False.ipynb`](./main_2d_resnet_typ2_pretrained_False.ipynb) | ECGResNet | 2D Representation | 100×100 | Type 2 | Pretrained = False configuration |
-| [`main_1d_resnet_typ1_selfeeg.ipynb`](./main_1d_resnet_typ1_selfeeg.ipynb) | ResNet1D | Raw 12-lead ECG | (12, 5000) | Type 1 | Using selfeeg model framework |
-| [`main_1d_resnet_typ2_selfeeg.ipynb`](./main_1d_resnet_typ2_selfeeg.ipynb) | ResNet1D | Raw 12-lead ECG | (12, 5000) | Type 2 | Using selfeeg model framework |
-| [`main_1d_resnet_typ1_selfeeg_singlelead1.ipynb`](./main_1d_resnet_typ1_selfeeg_singlelead1.ipynb) | ResNet1D | Raw Single-lead ECG | (1, 5000) | Type 1 | Using selfeeg, Lead 1 only |
-| [`main_1d_resnet_typ2_selfeeg_singlelead1.ipynb`](./main_1d_resnet_typ2_selfeeg_singlelead1.ipynb) | ResNet1D | Raw Single-lead ECG | (1, 5000) | Type 2 | Using selfeeg, Lead 1 only |
-| [`main_1_transformer_typ1.ipynb`](./main_1_transformer_typ1.ipynb) | VanillaTransformerECG | 2D Representation | 100×100 | Type 1 | Transformer-based 2D model |
-| [`main_1_transformer_typ2.ipynb`](./main_1_transformer_typ2.ipynb) | VanillaTransformerECG | 2D Representation | 100×100 | Type 2 | Transformer-based 2D model |
-| [`main_1_ffnn_singlelead_typ1.ipynb`](./main_1_ffnn_singlelead_typ1.ipynb) | FFNN | Raw Single-lead ECG | (5000, 1) | Type 1 | Single-lead Feedforward Neural Network |
-| [`main_1_ffnn_singlelead_typ2.ipynb`](./main_1_ffnn_singlelead_typ2.ipynb) | FFNN | Raw Single-lead ECG | (5000, 1) | Type 2 | Single-lead Feedforward Neural Network |
+## Why some folders contain symlinks alongside real files
 
-### Analysis & Utility Notebooks
-* [`analysis.ipynb`](./analysis.ipynb): Diagnostic dashboard for compiling experiment metrics, comparing accuracies, and plotting aggregate charts.
-* [`Extractor.ipynb`](./Extractor.ipynb): Notebook for computing features and exploring data samples.
-* [`12leadstack.ipynb`](./12leadstack.ipynb): Evaluates stacking architectures across multiple leads.
-* [`cg_200.ipynb`](./cg_200.ipynb): Tests coarse graining to size 200.
-* [`superpostion_inverse.ipynb`](./superpostion_inverse.ipynb): Exploration notebook for overlapping waveforms and signal reconstructibility.
-* [`save_data.ipynb`](./save_data.ipynb): Exports processed splits and intermediate datasets.
+Every `main_*.ipynb` experiment notebook captures its own working directory in a
+`default_dir = os.getcwd()` variable early on, `os.chdir()`s back to it between steps, and
+loads data / writes results using **bare relative names** (`"data_prep"`, `"ML/data_unq"`,
+`"EXPERIMENT_2d_leg_typ1_smallcnn_randomseed"`, `import dataloader`, ...). That only works if
+those names exist as real entries in the notebook's own folder.
 
----
+Rather than edit that logic inside 20+ large notebooks (which would risk changing how the
+paper's actual results were produced — the one thing explicitly *not* wanted here), each
+notebook's dependencies are made to exist alongside it via symlinks to the single real copy:
 
-## 🛠️ Python Scripts & Modules
+- `run_experiments/<experiment>/*.py` → real files in `src/`
+- `run_experiments/<experiment>/data_prep`, `.../ML` → real folders in `data_preparation/`
+- `run_experiments/<experiment>/EXPERIMENT_...` (permutation experiments only) → the shared
+  default-order results, really owned by the corresponding §3.1.1/§3.2.1 folder
+- `analysis_and_utilities/` gets the same treatment plus a symlink to every `EXPERIMENT_*`
+  folder, since `analysis.ipynb` globs across all of them at once
+- `MAIN/data_prep`, `MAIN/ML` — two root-level compatibility symlinks, kept because
+  `invertibility/*.ipynb` reference `../data_prep` (one level above `invertibility/`, which is
+  still `MAIN/`)
 
-* **[`dataloader.py`](./dataloader.py)**: Dataloading utilities for loading datasets in PyTorch.
-* **[`dataseperation.py`](./dataseperation.py)**: Standardizes dataset splits (train, validation, test) and labels.
-* **[`encoding.py`](./encoding.py)**: Polynomial signal-to-image encoding algorithms (e.g., Legendre, Chebyshev transformations).
-* **[`encoding2.py`](./encoding2.py)**: Alternative and updated encoding implementations.
-* **[`model_cnn.py`](./model_cnn.py)**: Contains PyTorch structures for the 2D CNNs (e.g., `SmallCNN`, `SmallCNN50`).
-* **[`model_nn.py`](./model_nn.py)**: Standard feedforward neural networks (FFNNs) baseline.
-* **[`vanilla_transformer_ecg.py`](./vanilla_transformer_ecg.py)**: Transformer models designed for 2D ECG signals.
-* **[`plots.py`](./plots.py)**: Handles metrics plotting, ROC/PR curves, and confusion matrix exports.
-* **[`smoothening.py`](./smoothening.py)**: Coarse-graining module (`cg50` refers to 50 coarsegrain size).
-* **[`seed_utils.py`](./seed_utils.py)**: Ensures model training repeatability across different randomized seeds.
+**Nothing is duplicated.** Every symlink resolves to exactly one real file or folder, and no
+notebook, module, or dataset was edited — only relocated, with byte-for-byte content verified
+against git history during this reorganization.
 
 ---
 
-## 🚀 Getting Started & Execution
+## 🔬 Experiments (paper §3 Results, §4.2 Discussion)
+
+See **[`run_experiments/README.md`](./run_experiments/README.md)** for the full linked index.
+Summary:
+
+| # | Paper § | What |
+|---|---|---|
+| 1–2 | 3.1 | OPI (Legendre), CNN, Data Type 1 — 100×100 and 50×50 |
+| 3–4 | 3.2 | OPI (Legendre), CNN, Data Type 2 — 100×100 and 50×50 |
+| 5–8 | 3.3 | Baseline 1: 2D ECGResNet — Type 1/2 × pretrained/non-pretrained |
+| 9–10 | 3.4 | Baseline 2: Vanilla Transformer — Type 1/2 |
+| 11–12 | 3.5 | Baseline 3: Single-lead FFNN — Type 1/2 |
+| 13–14 | 3.6 | Baseline 4: 12-lead SelfEEG ResNet1D — Type 1/2 |
+| 15–16 | 3.7 | Baseline 5: Single-lead SelfEEG ResNet1D — Type 1/2 |
+| 17–18 | 3.8 | Alternative encoding (Chebyshev-CNN) — Type 1/2 |
+| — | 3.9 | Invertibility of the OPI encoding — see `invertibility/` |
+| 19–20 | 4.2 | Lead-to-polynomial permutation sensitivity — Type 1/2 |
+
+## 🌱 Reproducibility & Seeds
+
+Every experiment above loops over the same 5 fixed seeds, defined once in
+[`src/seed_utils.py`](./src/seed_utils.py):
+
+```python
+SEEDS = [40, 41, 42, 43, 44]
+```
+
+`set_seed()` fixes `random`, `numpy`, and `torch` (CPU + CUDA) RNG state and disables cuDNN
+nondeterminism for each run. Every `EXPERIMENT_*` results folder contains one `.txt` training
+log per seed (`..._seed40.txt` … `..._seed44.txt`) plus a `..._multiseed_summary.csv` with the
+mean ± std metrics reported in the paper's tables, and multiseed learning-curve / confusion
+matrix / ROC / PR plots.
+
+---
+
+## 🛠️ Core Modules
+
+See **[`src/README.md`](./src/README.md)** for the full description of each module
+(`dataloader.py`, `dataseperation.py`, `encoding.py`, `model_cnn.py`, `model_nn.py`,
+`resnet1d.py`, `vanilla_transformer_ecg.py`, `plots.py`, `smoothening.py`, `seed_utils.py`).
+
+## 🗄️ Data Preparation
+
+See **[`data_preparation/README.md`](./data_preparation/README.md)** for the raw → filtered →
+encoded pipeline, disease categories/sample sizes, and known pre-existing gaps (e.g. a missing
+`encoding2.py` referenced by one notebook, and a few sub-notebooks with hardcoded absolute
+paths from the original author's machine that were already unrunnable before this reorg).
+
+## 📈 Analysis & Utilities
+
+See **[`analysis_and_utilities/README.md`](./analysis_and_utilities/README.md)**.
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 * Python 3.8+
 * PyTorch 1.9+
-* NumPy
-* Pandas
-* scikit-learn
-* Matplotlib
+* NumPy, Pandas, scikit-learn, Matplotlib
+* `selfeeg` (for the ResNet1D baselines)
+
+### Running an experiment
+1. Open `run_experiments/<experiment>/README.md` to confirm you have the right one.
+2. Open the `.ipynb` in that same folder in Jupyter and run top to bottom — its symlinked
+   dependencies (modules + data) are already in place, and results land back in that folder's
+   `EXPERIMENT_*` subfolder.

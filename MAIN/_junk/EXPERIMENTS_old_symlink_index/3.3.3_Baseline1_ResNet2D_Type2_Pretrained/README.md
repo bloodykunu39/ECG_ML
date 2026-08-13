@@ -1,0 +1,15 @@
+# Baseline 1: 2D ECGResNet (ImageNet-pretrained), Data Type 2
+
+**Paper section:** 3.3.3 (see `draft.pdf`)
+
+Standard 2D image-based ResNet baseline, pretrained weights, Data Type 2.
+
+## Contents (symlinks to the real files — run from their original location in `MAIN/`)
+
+- Run notebook(s): `main_2d_resnet_typ2.ipynb`
+- Results / plots / summary CSVs: `results`
+
+> Note: these are symlinks for navigation only. The notebooks rely on relative
+> imports (`dataloader.py`, `model_cnn.py`, `plots.py`, etc.) and relative data
+> paths that assume the working directory is `MAIN/`. Open/run the notebook
+> from its original path in `MAIN/`, not from inside this folder.

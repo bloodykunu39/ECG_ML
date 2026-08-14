@@ -13,8 +13,34 @@ The ECG data is transformed into image representations using a series of special
 
 The primary encoding functions are:
 
-- `smooth_using_normlised_legendre`
-- `smooth_using_normlised_cehbyshev_and_hermite`
+- `smooth_using_normlised_legendre`: Encodes ECG signals using Legendre polynomials into 2D images
+- `smooth_using_normlised_cehbyshev_and_hermite`: Encodes ECG signals using Chebyshev and Hermite polynomials into 2D images
+
+### Directory Structure
+
+```
+encoded_ecg_data/
+├── Legendre Encoding (100x100 resolution)
+│   ├── data_leg_typ1/                  # Type 1: Single diagnosis Legendre images
+│   ├── data_leg_typ2/                  # Type 2: Multi-diagnosis Legendre images
+│   ├── data_leg_typ1_50/               # Type 1: Reduced resolution (50x50)
+│   ├── data_leg_typ2_50/               # Type 2: Reduced resolution (50x50)
+│   ├── data_leg_typ1_perm1/            # Type 1: Lead permutation 1
+│   ├── data_leg_typ1_perm2/            # Type 1: Lead permutation 2
+│   ├── data_leg_typ1_perm3/            # Type 1: Lead permutation 3
+│   └── data_leg_typ1_perm4/            # Type 1: Lead permutation 4
+├── Hermite Encoding (100x100 resolution)
+│   ├── Data_herm/                      # Type 1: Single diagnosis Hermite images
+│   └── Data_herm_typ2/                 # Type 2: Multi-diagnosis Hermite images
+├── Chebyshev Encoding (100x100 resolution)
+│   ├── Data_cheb/                      # Type 1: Single diagnosis Chebyshev images
+│   └── Data_cheb_typ2/                 # Type 2: Multi-diagnosis Chebyshev images
+├── smooth_using_normlised_legendre.ipynb            # Legendre encoding pipeline
+├── smooth_using _normlised _cehbyshev_and _hermite.ipynb  # Chebyshev & Hermite encoding
+├── encoded_ecg_image_visualization.ipynb.ipynb      # Visualization and analysis of encoded images
+├── permutation.json                    # Channel permutation definitions
+└── README.md
+```
 
 ### Encoded Datasets
 

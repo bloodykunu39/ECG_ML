@@ -24,10 +24,10 @@ The encoded data is organized into specific directories based on the encoding me
 
 | Directory | Image Resolution | Type | Description |
 |---|---|---|---|
-| `ML/data_unq` | 100x100 | 1 | Legendre encoded images of Type 1. |
+| `ML/data_leg_typ1` | 100x100 | 1 | Legendre encoded images of Type 1. |
 | `ML/data_4` | 100x100 | 2 | Legendre encoded images of Type 2. |
-| `MAIN/ML/data_unq_50` | 50x50 | 1 | Legendre encoded images of Type 1, at a reduced resolution. |
-| `MAIN/ML/data_50` | 50x50 | 2 | Legendre encoded images of Type 2, at a reduced resolution. |
+| `MAIN/ML/data_leg_typ1_50` | 50x50 | 1 | Legendre encoded images of Type 1, at a reduced resolution. |
+| `MAIN/ML/data_leg_typ2_50` | 50x50 | 2 | Legendre encoded images of Type 2, at a reduced resolution. |
 
 #### Hermite Encoding
 

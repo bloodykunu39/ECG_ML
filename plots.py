@@ -1235,7 +1235,8 @@ def evaluate_multiseed_plots(
     import matplotlib.pyplot as plt
     import seaborn as sns
     from sklearn.metrics import (
-        confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score
+        confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score,
+        roc_auc_score
     )
     from sklearn.preprocessing import label_binarize
     import os
@@ -1339,6 +1340,15 @@ def evaluate_multiseed_plots(
              lw=2, alpha=0.8)
 
     # C. Macro-average ROC
+    # NOTE: the plotted curve (mean_tpr_macro) is still built by interpolating
+    # each class's TPR onto a common FPR grid and averaging -- this is only
+    # for drawing a single representative "macro" line on the plot. The
+    # *reported* macro-AUC (mean_auc_macro / aucs_macro) is computed
+    # separately via the standard one-vs-rest average (roc_auc_score(...,
+    # average="macro")), matching summarize_seed_results()'s auc_macro.
+    # Previously this used auc(mean_fpr, seed_macro_tpr) -- i.e. the AUC of
+    # the averaged curve itself -- which is NOT the same statistic as the
+    # standard macro-averaged AUC and was consistently lower.
     tprs_macro = []
     aucs_macro = []
     for res in all_metrics:
@@ -1351,8 +1361,8 @@ def evaluate_multiseed_plots(
             seed_macro_tpr += interp_tpr
         seed_macro_tpr /= n_classes
         tprs_macro.append(seed_macro_tpr)
-        aucs_macro.append(auc(mean_fpr, seed_macro_tpr))
-        
+        aucs_macro.append(roc_auc_score(y_bin, res['y_scores'], average="macro", multi_class="ovr"))
+
     mean_tpr_macro = np.mean(tprs_macro, axis=0)
     mean_tpr_macro[-1] = 1.0
     mean_auc_macro = np.mean(aucs_macro)

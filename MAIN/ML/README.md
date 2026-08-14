@@ -25,9 +25,22 @@ The encoded data is organized into specific directories based on the encoding me
 | Directory | Image Resolution | Type | Description |
 |---|---|---|---|
 | `ML/data_leg_typ1` | 100x100 | 1 | Legendre encoded images of Type 1. |
-| `ML/data_4` | 100x100 | 2 | Legendre encoded images of Type 2. |
+| `ML/data_leg_typ2` | 100x100 | 2 | Legendre encoded images of Type 2. |
 | `MAIN/ML/data_leg_typ1_50` | 50x50 | 1 | Legendre encoded images of Type 1, at a reduced resolution. |
 | `MAIN/ML/data_leg_typ2_50` | 50x50 | 2 | Legendre encoded images of Type 2, at a reduced resolution. |
+
+#### Legendre Encoding with Channel Permutations
+
+Channel permutations applied to Type 1 Legendre datasets to explore robustness to different lead orderings:
+
+| Directory | Type | Permutation | Description |
+|---|---|---|---|
+| `MAIN/ML/data_leg_typ1_perm1` | 1 | Permutation 1 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `MAIN/ML/data_leg_typ1_perm2` | 1 | Permutation 2 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `MAIN/ML/data_leg_typ1_perm3` | 1 | Permutation 3 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `MAIN/ML/data_leg_typ1_perm4` | 1 | Permutation 4 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+
+The channel permutations are defined in [`permutation.json`](./permutation.json).
 
 #### Hermite Encoding
 

@@ -1,0 +1,1 @@
+Legendre encoded images of Type 1 at reduced resolution (50x50).

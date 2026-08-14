@@ -1,0 +1,1 @@
+Legendre Type 1 with Permutation 1 - ECG leads shuffled: I→7, II→2, III→10, aVR→0, aVL→5, aVF→3, V1→11, V2→8, V3→1, V4→9, V5→6, V6→4

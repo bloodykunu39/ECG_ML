@@ -1,0 +1,1 @@
+Chebyshev encoded images of Type 1 (100x100 resolution).

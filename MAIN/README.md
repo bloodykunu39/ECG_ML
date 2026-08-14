@@ -70,7 +70,8 @@ MAIN/
 │   ├── Legendre Encoding (100x100)
 │   │   ├── main_2d_leg_typ1.ipynb            # Type 1 training
 │   │   ├── main_2d_leg_typ2.ipynb            # Type 2 training
-│   │   └── main_2d_leg_typ1_permutation.ipynb   # Channel permutation robustness
+│   │   ├── main_2d_leg_typ1_permutation.ipynb   # Channel permutation robustness (Type 1)
+│   │   └── main_2d_leg_typ2_permutation.ipynb   # Channel permutation robustness (Type 2)
 │   │
 │   ├── Legendre Encoding (50x50 Resolution)
 │   │   ├── main_2d_leg_on_50_typ1.ipynb      # Type 1 training (reduced res)

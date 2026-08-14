@@ -50,29 +50,26 @@ The encoded data is organized into specific directories based on the encoding me
 
 | Directory | Image Resolution | Type | Description |
 |---|---|---|---|
-| `encoded_ecg_data/dat
-a_leg_typ1` | 100x100 | 1 | Legendre encoded images of Type 1. |
-| `encoded_ecg_data/dat
-a_leg_typ2` | 100x100 | 2 | Legendre encoded images of Type 2. |
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ1_50` | 50x50 | 1 | Legendre encoded images of Type 1, at a reduced resolution. |
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ2_50` | 50x50 | 2 | Legendre encoded images of Type 2, at a reduced resolution. |
+| `data_leg_typ1/` | 100x100 | 1 | Legendre encoded images of Type 1. |
+| `data_leg_typ2/` | 100x100 | 2 | Legendre encoded images of Type 2. |
+| `data_leg_typ1_50/` | 50x50 | 1 | Legendre encoded images of Type 1, at reduced resolution. |
+| `data_leg_typ2_50/` | 50x50 | 2 | Legendre encoded images of Type 2, at reduced resolution. |
 
 #### Legendre Encoding with Channel Permutations
 
-Channel permutations applied to Type 1 Legendre datasets to explore robustness to different lead orderings:
+Channel permutations applied to Legendre datasets to explore robustness to different lead orderings:
+
+**Type 1 Permutations** (pre-computed, stored in encoded_ecg_data/):
 
 | Directory | Type | Permutation | Description |
 |---|---|---|---|
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ1_perm1` | 1 | Permutation 1 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ1_perm2` | 1 | Permutation 2 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ1_perm3` | 1 | Permutation 3 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
-| `MAIN/encoded_ecg_data/dat
-a_leg_typ1_perm4` | 1 | Permutation 4 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `data_leg_typ1_perm1/` | 1 | Permutation 1 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `data_leg_typ1_perm2/` | 1 | Permutation 2 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `data_leg_typ1_perm3/` | 1 | Permutation 3 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+| `data_leg_typ1_perm4/` | 1 | Permutation 4 | Legendre Type 1 with shuffled ECG lead order (see `permutation.json` for mapping). |
+
+**Type 2 Permutations** (applied dynamically in notebook):
+- `main_2d_leg_typ2_permutation.ipynb`: Applies channel permutations to Type 2 Legendre data at training time
 
 The channel permutations are defined in [`permutation.json`](./permutation.json).
 
@@ -80,16 +77,12 @@ The channel permutations are defined in [`permutation.json`](./permutation.json)
 
 | Directory | Image Resolution | Type | Description |
 |---|---|---|---|
-| `MAIN/encoded_ecg_data/Data
-_herm` | 100x100 | 1 | Hermite encoded images of Type 1. |
-| `MAIN/encoded_ecg_data/Data
-_herm_typ2` | 100x100 | 2 | Hermite encoded images of Type 2. |
+| `Data_herm/` | 100x100 | 1 | Hermite encoded images of Type 1. |
+| `Data_herm_typ2/` | 100x100 | 2 | Hermite encoded images of Type 2. |
 
 #### Chebyshev Encoding
 
 | Directory | Image Resolution | Type | Description |
 |---|---|---|---|
-| `MAIN/encoded_ecg_data/Data
-_cheb` | 100x100 | 1 | Chebyshev encoded images of Type 1. |
-| `MAIN/encoded_ecg_data/Data
-_cheb_typ2` | 100x100 | 2 | Chebyshev encoded images of Type 2. |
+| `Data_cheb/` | 100x100 | 1 | Chebyshev encoded images of Type 1. |
+| `Data_cheb_typ2/` | 100x100 | 2 | Chebyshev encoded images of Type 2. |

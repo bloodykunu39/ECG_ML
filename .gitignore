@@ -15,6 +15,7 @@ __pycache__/
 !results/EXPERIMENT_*/*.txt
 !results/EXPERIMENT_*/*/*.txt
 !readme.txt
+!requirements.txt
 
 # Project-specific excludes
 main_1.ipynb

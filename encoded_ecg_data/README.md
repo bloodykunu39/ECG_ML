@@ -16,6 +16,18 @@ The primary encoding functions are:
 - `smooth_using_normlised_legendre`: Encodes ECG signals using Legendre polynomials into 2D images
 - `smooth_using_normlised_cehbyshev_and_hermite`: Encodes ECG signals using Chebyshev and Hermite polynomials into 2D images
 
+### Where each polynomial basis is implemented
+
+The three polynomial families are **not** implemented uniformly — only Legendre lives in the shared root-level module; Chebyshev and Hermite are self-contained inside their notebook.
+
+| Basis | Implementation | Functions |
+| :--- | :--- | :--- |
+| **Legendre** | [`../encoding.py`](../encoding.py), [`../smoothening.py`](../smoothening.py) (shared modules, imported via `from encoding import superposition, normalize_matrix`) | `superposition()`, `inverse_superposition()`, `coarsegrain()` |
+| **Chebyshev** | defined inline in `smooth_using _normlised _cehbyshev_and _hermite.ipynb` (not in `encoding.py`) | `superposition_cheb()` (uses `scipy.special.chebyt`), `coarse_grain_cheb()`, plus a local copy of `normalize_matrix()` |
+| **Hermite** | defined inline in `smooth_using _normlised _cehbyshev_and _hermite.ipynb` (not in `encoding.py`) | `superposition_herm()` (uses `scipy.special.hermite`), `coarse_grain_herm()`, plus a local copy of `normalize_matrix()` |
+
+Because Chebyshev/Hermite have no invertibility helper analogous to `encoding.py`'s `inverse_superposition()`, the [`invertibility/`](../invertibility) checks in this repo only cover the Legendre encoding used in the paper's main results.
+
 ### Directory Structure
 
 ```

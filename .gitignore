@@ -16,3 +16,5 @@ MAIN/ML/smooth_using _normlised _legendre copy.ipynb
 !MAIN/EXPERIMENT_*/*.txt
 !MAIN/EXPERIMENT_*/*/*.txtMAIN/zenodo_data/
 !readme.txt
+.ipynb_checkpoints/
+MAIN/data_prep/data/a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0

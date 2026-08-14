@@ -5,7 +5,7 @@ This section provides an overview of the data and the encoding processes used in
 
 ### ECG Data Source
 
-The raw, filtered ECG data is located in the `MAIN/data_prep` directory. This data serves as the input for our encoding processes.
+The raw, filtered ECG data is located in the [`../data_prep`](../data_prep) directory. This data serves as the input for our encoding processes.
 
 ### Data Encoding
 

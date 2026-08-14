@@ -1,17 +1,19 @@
-# Other Files
+# Figures
 
 This directory contains supplementary materials including visualization images and notebooks used for figure generation and documentation in this project.
 
 ## Directory Structure
 
 ```
-Other files/
+figures/
 ├── Visualization Notebooks
 │   ├── image_paper.ipynb                   # Generates paper figures and detailed visualizations
 │   └── images.ipynb                        # Quick image generation and exploratory visualizations
 ├── ECG Representation Diagrams
 │   ├── 12_lead_ecg.png                     # Illustration of 12-lead ECG signal format
-│   └── 12_lead_ecg_encoding.png            # Visual explanation of ECG encoding process
+│   ├── 12_lead_ecg_encoding.png            # Visual explanation of ECG encoding process
+│   ├── image_demo_gs.png                   # Full-resolution OPI superposition image (grayscale)
+│   └── image_demo_rgb.png                  # Coarse-grained OPI image (pseudocolor)
 ├── Model Architecture Diagrams
 │   ├── feedforward_nn.png                  # Feedforward neural network architecture
 │   ├── small_cnn_horizontal.png            # Small CNN model (horizontal layout)
@@ -27,7 +29,7 @@ Other files/
 
 - **image_paper.ipynb**: Comprehensive notebook for generating publication-quality figures and detailed visual explanations of the ECG encoding, model architectures, and results.
 - **images.ipynb**: Quick reference notebook for generating and viewing images used in documentation and presentations.
-- **PNG Images**: Visual diagrams illustrating ECG signal formats, encoding methods, neural network architectures, and signal processing results. Used in papers, presentations, and documentation.
+- **PNG Images**: Visual diagrams illustrating ECG signal formats, encoding methods, neural network architectures, and signal processing results. Used in papers, presentations, and documentation, including the root [README](../README.md).
 
 ## Purpose
 

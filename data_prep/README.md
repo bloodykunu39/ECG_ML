@@ -11,27 +11,24 @@ The raw 12-lead ECG data was obtained from the [PhysioNet database](https://phys
 ### Directory Structure
 
 ```
-MAIN/
-├── data_prep/
-│   ├── data/
-│   │   ├── a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0/
-│   │   │   ├── ConditionNames_SNOMED-CT.csv          # Disease code mappings
-│   │   │   ├── LICENSE.txt                           # Database license
-│   │   │   ├── RECORDS                               # List of all patient records
-│   │   │   ├── SHA256SUMS.txt                        # File integrity checksums
-│   │   │   └── WFDBRecords/                          # Raw ECG data (46 patient batches)
-│   │   │       └── 01/ - 46/                         # Numbered folders with .dat/.hea files
-│   │   └── a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0.zip
-│   ├── data_prep.ipynb                               # Raw data filtering & preprocessing
-│   ├── data_prep_for_only_one_disease.ipynb          # Type 1 dataset creation
-│   ├── disease_*.npy                                 # Type 2 processed data (multi-diagnosis)
-│   ├── unq_disease_*.npy                             # Type 1 processed data (single diagnosis)
-│   └── README.md
-├── Example ECG/
-│   ├── data_1.mat                                    # Sample ECG record 1 (.mat format)
-│   └── data_2.mat                                    # Sample ECG record 2 (.mat format)
-└── ...
+data_prep/
+├── data/
+│   ├── a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0/
+│   │   ├── ConditionNames_SNOMED-CT.csv          # Disease code mappings
+│   │   ├── LICENSE.txt                           # Database license
+│   │   ├── RECORDS                               # List of all patient records
+│   │   ├── SHA256SUMS.txt                        # File integrity checksums
+│   │   └── WFDBRecords/                          # Raw ECG data (46 patient batches)
+│   │       └── 01/ - 46/                         # Numbered folders with .dat/.hea files
+│   └── a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0.zip
+├── data_prep.ipynb                               # Raw data filtering & preprocessing
+├── data_prep_for_only_one_disease.ipynb          # Type 1 dataset creation
+├── disease_*.npy                                 # Type 2 processed data (multi-diagnosis)
+├── unq_disease_*.npy                             # Type 1 processed data (single diagnosis)
+└── README.md
 ```
+
+Sample records for quick testing without the full dataset are in [`../example_data/`](../example_data).
 
 ### Data Preparation Scripts
 

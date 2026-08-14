@@ -12,9 +12,9 @@ Most clinical biosignals — especially multi-lead ECGs — are one-dimensional 
 
 ## Method summary
 
-1. **Superposition** — each ECG lead $f_l(t)$ is outer-producted with an orthonormal polynomial basis vector $\mathbf{p}_l$ and summed: $\mathbf{I} = \sum_{l=1}^{12} \mathbf{f}_l \mathbf{p}_l^{T}$, producing a $5000 \times 5000$ image.
-2. **Invertibility** — because $\{\mathbf{p}_l\}$ is orthonormal, each lead is exactly recoverable via $\mathbf{f}_l = \mathbf{I}\mathbf{p}_l$; no information is lost prior to coarse-graining.
-3. **Coarse-graining** — block-averaging reduces the image to $100\times100$ or $50\times50$ for efficient training.
+1. **Superposition** — each ECG lead $f_l(t)$ is outer-producted with an orthonormal polynomial basis vector $\mathbf{p}_l$ and summed: $\mathbf{I} = \sum_{l=1}^{12} \mathbf{f}_l \mathbf{p}_l^{T}$, producing a $5000 \times 5000$ image. Implemented in [`encoding.py`](encoding.py) (`superposition()`).
+2. **Invertibility** — because $\{\mathbf{p}_l\}$ is orthonormal, each lead is exactly recoverable via $\mathbf{f}_l = \mathbf{I}\mathbf{p}_l$; no information is lost prior to coarse-graining. Implemented in [`encoding.py`](encoding.py) (`inverse_superposition()`); empirically validated in [`invertibility/`](invertibility).
+3. **Coarse-graining** — block-averaging reduces the image to $100\times100$ or $50\times50$ for efficient training. Implemented in [`smoothening.py`](smoothening.py) (`coarsegrain()`).
 4. **Classification** — a compact CNN (`SmallCNN`), a ResNet-18 baseline (`ECGResNet`), a raw-signal `VanillaTransformerECG`, a raw-signal `ResNet1D` (from the [`selfeeg`](https://pypi.org/project/selfeeg/) package), and an FFNN baseline are trained on three-class rhythm classification (Sinus Tachycardia / Sinus Bradycardia / Sinus Rhythm) using the [PhysioNet ECG-Arrhythmia Database](https://physionet.org/static/published-projects/ecg-arrhythmia/a-large-scale-12-lead-electrocardiogram-database-for-arrhythmia-study-1.0.0.zip).
 
 All experiments use a patient-wise 70/15/15 split, five random seeds (40–44), and are repeated across two dataset configurations (Type 1: single-diagnosis patients; Type 2: patients with comorbidities). See the paper for full methodological detail.
@@ -34,8 +34,12 @@ ECG_ML/
 ├── invertibility/         # Empirical verification that OPI is invertible pre-coarse-graining
 ├── example_data/          # Sample .mat records for quick pipeline testing
 ├── figures/               # Figures and diagram-generation notebooks
-├── *.py                   # Model architectures (SmallCNN, ECGResNet, VanillaTransformerECG,
-│                           # ResNet1D) and shared utilities (dataloader, seeds, plotting)
+├── encoding.py             # >>> Core OPI implementation: superposition() / inverse_superposition()
+├── smoothening.py          # >>> Core OPI implementation: coarsegrain()
+├── model_cnn.py, model_nn.py, resnet1d.py, vanilla_transformer_ecg.py
+│                           # Model architectures (SmallCNN, ECGResNet, ResNet1D, VanillaTransformerECG)
+├── dataloader.py, dataseperation.py, seed_utils.py, plots.py
+│                           # Shared utilities (data loading, splits, seeds, plotting)
 ├── main_*.ipynb            # One training notebook per experimental configuration in the paper
 └── results/                # analysis.ipynb + one EXPERIMENT_*/ folder per configuration
                              # (logs, metrics, confusion/ROC/PR plots)
